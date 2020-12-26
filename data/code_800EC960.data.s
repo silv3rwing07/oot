@@ -231,11 +231,11 @@ glabel sOcaMinigameEndPos
 glabel sOcaMinigameNoteCnts
     .incbin "baserom.z64", 0xBA811C, 0x4
 
-glabel sOcarinaSongs
+glabel sOcarinaTeachSongs
     .incbin "baserom.z64", 0xBA8120, 0x8C0
 
 glabel sPlaybackSong
-    .word sOcarinaSongs
+    .word sOcarinaTeachSongs
 
 glabel D_80131844
     .incbin "baserom.z64", 0xBA89E4, 0x10
@@ -283,15 +283,15 @@ glabel gScarecrowCustomSongPtr
     .word sPierresSong
 
 glabel gScarecrowSpawnSongPtr
-    .word sOcarinaSongs+0x780
+    .word sOcarinaTeachSongs+0x780
 
 glabel D_80131BEC
-    .word sOcarinaSongs+0x820
+    .word sOcarinaTeachSongs+0x820
 
 glabel sNoteValueIndexMap
     .incbin "baserom.z64", 0xBA8D90, 0x10
 
-glabel sOcarinaSongNotes
+glabel sOcarinaDetectableSongs
     .incbin "baserom.z64", 0xBA8DA0, 0x80
 
 glabel D_80131C80

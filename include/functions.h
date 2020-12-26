@@ -2036,10 +2036,10 @@ void func_800E4D94(void);
 void func_800E4F58(void);
 void func_800E4FB0(void);
 AudioTask* func_800E4FE0(void);
-void func_800E5AD8(u32 arg0, f32 arg1);
-void func_800E5AFC(u32 arg0, u32 arg1);
-void func_800E5B20(u32 arg0, s8 arg1);
-void func_800E5B50(u32 arg0, u16 arg1);
+void Audio_SendMsg_f32(u32 dest, f32 value); //func_800E5AD8
+void Audio_SendMsg_u32(u32 dest, u32 value); //func_800E5AFC
+void Audio_SendMsg_s8(u32 dest, s8 value); //func_800E5B20
+void Audio_SendMsg_u16(u32 dest, u16 value); //func_800E5B50
 s32 func_800E5B80(void);
 u32 func_800E5E20(u32 *arg0);
 u8* func_800E5E84(s32 arg0, u32 *arg1);

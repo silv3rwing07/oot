@@ -14,7 +14,7 @@ void func_800F9280(u8 arg0, u8 arg1, u8 arg2, u16 arg3);
 #pragma GLOBAL_ASM("asm/non_matchings/code/code_800F9280/func_800F9280.s")
 
 void func_800F9474(u8 arg0, u16 arg1) {
-    func_800E5AFC(MK_CMD(0x83, arg0, 0x00, 0x00), (arg1 * (u16)gAudioContext.gAudioBufferParameters.updatesPerFrame) / 4);
+    Audio_SendMsg_u32(AUDIO_CMD(0x83, arg0, 0x00, 0x00), (arg1 * (u16)gAudioContext.gAudioBufferParameters.updatesPerFrame) / 4);
     D_8016E750[arg0].unk_254 = 0xFFFF;
 }
 
@@ -360,13 +360,13 @@ loop_49:
             }
             return;
         case 7:
-            func_800E5B20(((temp_a3 & 0xFF) << 0x10) | 0x46000000 | (((u32) (arg0 & 0xFF0000) >> 0x10) & 0xFF), (s8) arg0);
+            Audio_SendMsg_s8(AUDIO_CMD(0x46, temp_a3, 0, ((u32) (arg0 & 0xFF0000) >> 0x10)), (s8) arg0);
             return;
         case 8:
             temp_v0_10 = temp_a3 & 0xFF;
             temp_a2_5 = ((u32) (arg0 & 0xF00) >> 8) & 0xFF;
             if ((D_8016E750[temp_v0_10].unk_258 & (1 << temp_a2_5)) == 0) {
-                func_800E5B20(((temp_v0_10 & 0xFF) << 0x10) | 0x6000000 | ((temp_a2_5 & 0xFF) << 8) | (((u32) (arg0 & 0xFF0000) >> 0x10) & 0xFF), (s8) arg0);
+                Audio_SendMsg_s8(AUDIO_CMD(0x06, temp_v0_10, temp_a2_5, ((u32) (arg0 & 0xFF0000) >> 0x10)), (s8) arg0);
             }
             return;
         case 9:
@@ -376,19 +376,19 @@ loop_49:
             temp_a2_6 = arg0 & 0xFFFF;
             phi_v1_9 = temp_a2_6;
             if (temp_a2_6 != 0) {
-                temp_v0_11 = (temp_a3 & 0xFF) << 0x10;
-                sp30 = temp_v0_11;
+                //temp_v0_11 = (temp_a3 & 0xFF) << 0x10;
+                //sp30 = temp_v0_11;
                 sp34 = temp_a2_6;
                 sp38 = temp_a3;
-                func_800E5B50(temp_v0_11 | 0x90000000, temp_a2_6 & 0xFFFF);
-                func_800E5B20(temp_v0_11 | 0x8000000 | 0xFF00, (u8)1);
+                Audio_SendMsg_u16(AUDIO_CMD(0x90, temp_a3, 0, 0), temp_a2_6 & 0xFFFF);
+                Audio_SendMsg_s8(AUDIO_CMD(0x08, temp_a3, 0xFF, 0), (u8)1);
                 phi_v1_9 = sp34;
             }
             temp_a2_7 = phi_v1_9 ^ 0xFFFF;
             if (temp_a2_7 != 0) {
-                temp_v0_12 = ((temp_a3 >> 0x18) & 0xFF) << 0x10;
-                func_800E5B50(temp_v0_12 | 0x90000000, temp_a2_7 & 0xFFFF);
-                func_800E5B20(temp_v0_12 | 0x8000000 | 0xFF00, (u8)0);
+                //temp_v0_12 = ((temp_a3 >> 0x18) & 0xFF) << 0x10;
+                Audio_SendMsg_u16(AUDIO_CMD(0x90, (temp_a3 >> 0x18), 0, 0), temp_a2_7 & 0xFFFF);
+                Audio_SendMsg_s8(AUDIO_CMD(0x08, (temp_a3 >> 0x18), 0xFF, 0), (u8)0);
             }
             return;
         case 11:
@@ -402,7 +402,7 @@ loop_49:
         case 14:
             temp_v0_14 = ((u32) (arg0 & 0xF00) >> 8) & 0xFF;
             if (temp_v0_14 == 0) {
-                func_800E5AFC(0xF0000000U, (u32) *(&D_80133410 + (arg0 & 0xFF)));
+                Audio_SendMsg_u32(AUDIO_CMD(0xF0, 0, 0, 0), (u32) *(&D_80133410 + (arg0 & 0xFF)));
             } else if (temp_v0_14 == 1) {
                 D_80133408 = (u8) (arg0 & 1);
             }
@@ -414,7 +414,7 @@ loop_49:
             sp59 = temp_t8_3;
             func_800E5F88(arg0 & 0xFF);
             func_800F71BC(sp59);
-            func_800E5AFC(0xF8000000U, 0U);
+            Audio_SendMsg_u32(AUDIO_CMD(0xF8, 0, 0, 0), 0U);
             return;
 
     }
@@ -550,7 +550,7 @@ void func_800FA3DC(void) {
                 D_8016E750[i].unk_00 = D_8016E750[i].unk_04;
             }
 
-            func_800E5AD8(0x41000000 | (i & 0xFF) << 0x10, D_8016E750[i].unk_00);
+            Audio_SendMsg_f32(AUDIO_CMD(0x41, i, 0, 0), D_8016E750[i].unk_00);
         }
     
         if (D_8016E750[i].unk_14 != 0) {
@@ -611,7 +611,7 @@ void func_800FA3DC(void) {
             } else {
                 D_8016E750[i].unk_1C = D_8016E750[i].unk_20;
             }
-            func_800E5AFC(((i & 0xFF) << 0x10) | 0x47000000, (s32)D_8016E750[i].unk_1C);
+            Audio_SendMsg_u32(AUDIO_CMD(0x47, i, 0, 0), (s32)D_8016E750[i].unk_1C);
         }
 
         if (D_8016E750[i].unk_252 != 0) {
@@ -624,7 +624,7 @@ void func_800FA3DC(void) {
                         D_8016E750[i].unk_50[k].unk_00 = D_8016E750[i].unk_50[k].unk_04;
                         D_8016E750[i].unk_252 ^= (1 << k);
                     }
-                    func_800E5AD8(0x1000000 | ((i & 0xFF) << 0x10) | ((k & 0xFF) << 8), D_8016E750[i].unk_50[k].unk_00);
+                    Audio_SendMsg_f32(AUDIO_CMD(0x01, i, k, 0), D_8016E750[i].unk_50[k].unk_00);
                 }
             }
         }
@@ -640,7 +640,7 @@ void func_800FA3DC(void) {
                         D_8016E750[i].unk_250 ^= (1 << k);
                     }
                     temp_a1 = k;
-                    func_800E5AD8(0x4000000 | ((i & 0xFF) << 0x10) | ((temp_a1 & 0xFF) << 8), D_8016E750[i].unk_50[k].unk_10);
+                    Audio_SendMsg_f32(AUDIO_CMD(0x04, i, temp_a1, 0), D_8016E750[i].unk_50[k].unk_10);
                 }
             }
         }
@@ -695,15 +695,15 @@ void func_800FA3DC(void) {
                             break;
                         case 14:
                             if (temp_a3_3 & 1) {
-                                func_800E5AFC(0xE3000000, 0);
+                                Audio_SendMsg_u32(AUDIO_CMD(0xE3, 0, 0, 0), 0);
                             }
 
                             if (temp_a3_3 & 2) {
-                                func_800E5AFC(0xE3000000, 1);
+                                Audio_SendMsg_u32(AUDIO_CMD(0xE3, 0, 0, 0), 1);
                             }
 
                             if (temp_a3_3 & 4) {
-                                func_800E5AFC(0xE3000000, 2);
+                                Audio_SendMsg_u32(AUDIO_CMD(0xE3, 0, 0, 0), 2);
                             }
                             break;
                         case 9:
@@ -732,13 +732,13 @@ u8 func_800FAD34(void) {
         if (D_80133418 == 1) {
             if (func_800E5EDC() == 1) {
                 D_80133418 = 0;
-                func_800E5B20(0x46020000, D_801333CC);
+                Audio_SendMsg_s8(AUDIO_CMD(0x46, 0x02, 0, 0), D_801333CC);
                 func_800F7170();
             }
         } else if (D_80133418 == 2) {
             while(func_800E5EDC() != 1){ }
             D_80133418 = 0;
-            func_800E5B20(0x46020000, D_801333CC);
+            Audio_SendMsg_s8(AUDIO_CMD(0x46, 0x02, 0, 0), D_801333CC);
             func_800F7170();
         }
     }

@@ -1,7 +1,7 @@
 #ifndef _Z64_AUDIO_H_
 #define _Z64_AUDIO_H_
 
-#define MK_CMD(b0,b1,b2,b3) ((((b0) & 0xFF) << 0x18) | (((b1) & 0xFF) << 0x10) | (((b2) & 0xFF) << 0x8) | (((b3) & 0xFF) << 0))
+#define AUDIO_CMD(cmd,unk,chan,port) ((((cmd) & 0xFF) << 0x18) | (((unk) & 0xFF) << 0x10) | (((chan) & 0xFF) << 0x8) | (((port) & 0xFF) << 0))
 
 /**
  * Structs in this repository have primarily been imported from the SM64 Decompilation.
@@ -1103,18 +1103,26 @@ typedef struct {
 #define SFX_INDEX(sfxId)    (sfxId & 0x01FF)
 #define SFX_BANK(sfxId)     SFX_BANK_SHIFT(SFX_BANK_MASK(sfxId))
 
+/*
+"Teach" song copies, used for:
+- Song notes that draw in the music text box
+- Notes that Impa/Sheik/etc. play/sing to teach you the song
+- Notes that you have to match to learn the song (Z/R work correctly!)
+- Notes that play in the menu and that you have to match--NOT the notes on the
+  staff by default when cursoring over the song (see OcarinaDetectableSong)
+*/
 typedef struct {
     /* 0x0000 */ u8 noteIdx;
-    /* 0x0001 */ u8 unk_01;
-    /* 0x0002 */ u16 unk_02;
-    /* 0x0004 */ u8 volume;
+    /* 0x0001 */ u8 unk_01; //seems to be padding
+    /* 0x0002 */ u16 time; //time
+    /* 0x0004 */ u8 volume; //always 57 for scarecrow's song
     /* 0x0005 */ u8 vibrato;
-    /* 0x0006 */ s8 tone;
-    /* 0x0007 */ u8 semitone;
-} OcarinaNote;  // size = 0x8
+    /* 0x0006 */ s8 pitch;
+    /* 0x0007 */ u8 semitone; //00 for normal songs. 40 flat, 80 sharp, C0 rest / both flat and sharp?
+} OcarinaTeachNote;  // size = 0x8
 
 typedef struct {
-    /* 0x0000 */ OcarinaNote notes[20];
-} OcarinaSong; // size = 0xA0
+    /* 0x0000 */ OcarinaTeachNote notes[20];
+} OcarinaTeachSong; // size = 0xA0
 
 #endif

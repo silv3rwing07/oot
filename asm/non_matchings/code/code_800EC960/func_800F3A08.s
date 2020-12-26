@@ -241,7 +241,7 @@ glabel L800F3C74
 /* B6AEF0 800F3D50 00613025 */  or    $a2, $v1, $at
 /* B6AEF4 800F3D54 34C40002 */  ori   $a0, $a2, 2
 /* B6AEF8 800F3D58 AFA60018 */  sw    $a2, 0x18($sp)
-/* B6AEFC 800F3D5C 0C0396C8 */  jal   func_800E5B20
+/* B6AEFC 800F3D5C 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6AF00 800F3D60 AFA3001C */   sw    $v1, 0x1c($sp)
 /* B6AF04 800F3D64 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6AF08 800F3D68 83A50042 */  lb    $a1, 0x42($sp)
@@ -251,7 +251,7 @@ glabel L800F3C74
 /* B6AF18 800F3D78 00812025 */  or    $a0, $a0, $at
 /* B6AF1C 800F3D7C 50AF0007 */  beql  $a1, $t7, .L800F3D9C
 /* B6AF20 800F3D80 C7A0003C */   lwc1  $f0, 0x3c($sp)
-/* B6AF24 800F3D84 0C0396C8 */  jal   func_800E5B20
+/* B6AF24 800F3D84 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6AF28 800F3D88 AFA20024 */   sw    $v0, 0x24($sp)
 /* B6AF2C 800F3D8C 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6AF30 800F3D90 83AA0042 */  lb    $t2, 0x42($sp)
@@ -266,7 +266,7 @@ glabel L800F3C74
 /* B6AF50 800F3DB0 45030008 */  bc1tl .L800F3DD4
 /* B6AF54 800F3DB4 93A3003A */   lbu   $v1, 0x3a($sp)
 /* B6AF58 800F3DB8 44050000 */  mfc1  $a1, $f0
-/* B6AF5C 800F3DBC 0C0396B6 */  jal   func_800E5AD8
+/* B6AF5C 800F3DBC 0C0396B6 */  jal   Audio_SendMsg_f32
 /* B6AF60 800F3DC0 AFA20024 */   sw    $v0, 0x24($sp)
 /* B6AF64 800F3DC4 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6AF68 800F3DC8 C7A4003C */  lwc1  $f4, 0x3c($sp)
@@ -282,7 +282,7 @@ glabel L800F3C74
 /* B6AF8C 800F3DEC 00052E00 */  sll   $a1, $a1, 0x18
 /* B6AF90 800F3DF0 00052E03 */  sra   $a1, $a1, 0x18
 /* B6AF94 800F3DF4 AFA20024 */  sw    $v0, 0x24($sp)
-/* B6AF98 800F3DF8 0C0396C8 */  jal   func_800E5B20
+/* B6AF98 800F3DF8 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6AF9C 800F3DFC AFA30020 */   sw    $v1, 0x20($sp)
 /* B6AFA0 800F3E00 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6AFA4 800F3E04 8FA30020 */  lw    $v1, 0x20($sp)
@@ -295,7 +295,7 @@ glabel L800F3C74
 /* B6AFBC 800F3E1C 106C0007 */  beq   $v1, $t4, .L800F3E3C
 /* B6AFC0 800F3E20 34840003 */   ori   $a0, $a0, 3
 /* B6AFC4 800F3E24 00052E03 */  sra   $a1, $a1, 0x18
-/* B6AFC8 800F3E28 0C0396C8 */  jal   func_800E5B20
+/* B6AFC8 800F3E28 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6AFCC 800F3E2C AFA20024 */   sw    $v0, 0x24($sp)
 /* B6AFD0 800F3E30 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6AFD4 800F3E34 93AD0039 */  lbu   $t5, 0x39($sp)
@@ -308,7 +308,7 @@ glabel L800F3C74
 /* B6AFEC 800F3E4C 11D80011 */  beq   $t6, $t8, .L800F3E94
 /* B6AFF0 800F3E50 00812025 */   or    $a0, $a0, $at
 /* B6AFF4 800F3E54 24050010 */  li    $a1, 16
-/* B6AFF8 800F3E58 0C0396C8 */  jal   func_800E5B20
+/* B6AFF8 800F3E58 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6AFFC 800F3E5C AFA20024 */   sw    $v0, 0x24($sp)
 /* B6B000 800F3E60 83A30038 */  lb    $v1, 0x38($sp)
 /* B6B004 800F3E64 8FA4001C */  lw    $a0, 0x1c($sp)
@@ -318,7 +318,7 @@ glabel L800F3C74
 /* B6B014 800F3E74 24A500FF */  addiu $a1, $a1, 0xff
 /* B6B018 800F3E78 30A5FFFF */  andi  $a1, $a1, 0xffff
 /* B6B01C 800F3E7C AFA30020 */  sw    $v1, 0x20($sp)
-/* B6B020 800F3E80 0C0396D4 */  jal   func_800E5B50
+/* B6B020 800F3E80 0C0396D4 */  jal   Audio_SendMsg_u16
 /* B6B024 800F3E84 00812025 */   or    $a0, $a0, $at
 /* B6B028 800F3E88 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6B02C 800F3E8C 8FA30020 */  lw    $v1, 0x20($sp)
@@ -331,7 +331,7 @@ glabel L800F3C74
 /* B6B044 800F3EA4 11190007 */  beq   $t0, $t9, .L800F3EC4
 /* B6B048 800F3EA8 00812025 */   or    $a0, $a0, $at
 /* B6B04C 800F3EAC 01002825 */  move  $a1, $t0
-/* B6B050 800F3EB0 0C0396C8 */  jal   func_800E5B20
+/* B6B050 800F3EB0 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6B054 800F3EB4 AFA20024 */   sw    $v0, 0x24($sp)
 /* B6B058 800F3EB8 8FA20024 */  lw    $v0, 0x24($sp)
 /* B6B05C 800F3EBC 83A9003B */  lb    $t1, 0x3b($sp)
@@ -341,4 +341,3 @@ glabel L800F3C74
 /* B6B068 800F3EC8 27BD0048 */  addiu $sp, $sp, 0x48
 /* B6B06C 800F3ECC 03E00008 */  jr    $ra
 /* B6B070 800F3ED0 00000000 */   nop   
-

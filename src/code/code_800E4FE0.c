@@ -375,12 +375,13 @@ void func_800E59F4(void) {
 }
 
 #ifdef NON_MATCHING
+//func_800E5A8C
 // regalloc
-void func_800E5A8C(u32 arg0, void **arg1) {
+void Audio_SendMsg(u32 dest, void **value) {
     unk_5C50_s *t = &gAudioContext.unk_5C50[gAudioContext.unk_5BD8];
 
-    t->unk_00 = arg0;
-    t->unk_04 = *arg1;
+    t->unk_00 = dest;
+    t->unk_04 = *value;
 
     gAudioContext.unk_5BD8++;
 
@@ -389,32 +390,32 @@ void func_800E5A8C(u32 arg0, void **arg1) {
     }
 }
 #else
-#pragma GLOBAL_ASM("asm/non_matchings/code/code_800E4FE0/func_800E5A8C.s")
-void func_800E5A8C(u32 arg0, void **arg1);
+#pragma GLOBAL_ASM("asm/non_matchings/code/code_800E4FE0/Audio_SendMsg.s")
+void Audio_SendMsg(u32 dest, void **value);
 #endif
 
 // put f32
-void func_800E5AD8(u32 arg0, f32 arg1) {
-    func_800E5A8C(arg0, &arg1);
+void Audio_SendMsg_f32(u32 dest, f32 value) {
+    Audio_SendMsg(dest, &value);
 }
 
 // put u32
-void func_800E5AFC(u32 arg0, u32 arg1) {
-    func_800E5A8C(arg0, &arg1);
+void Audio_SendMsg_u32(u32 dest, u32 value) {
+    Audio_SendMsg(dest, &value);
 }
 
 // put s8
-void func_800E5B20(u32 arg0, s8 arg1) {
+void Audio_SendMsg_s8(u32 dest, s8 value) {
     u32 sp1C;
 
-    sp1C = arg1 << 0x18;
-    func_800E5A8C(arg0, &sp1C);
+    sp1C = value << 0x18;
+    Audio_SendMsg(dest, &sp1C);
 }
 
 // put u16
-void func_800E5B50(u32 arg0, u16 arg1) {
-    u32 sp1C = arg1 << 0x10;
-    func_800E5A8C(arg0, &sp1C);
+void Audio_SendMsg_u16(u32 dest, u16 value) {
+    u32 sp1C = value << 0x10;
+    Audio_SendMsg(dest, &sp1C);
 }
 
 #ifdef NON_MATCHING
@@ -569,7 +570,7 @@ s32 func_800E5F88(u32 resetPreloadID) {
     }
 
     func_800E5F34();
-    func_800E5AFC(0xF9000000, resetPreloadID);
+    Audio_SendMsg_u32(AUDIO_CMD(0xF9, 0, 0, 0), resetPreloadID);
     
     return func_800E5B80();
 }
@@ -738,15 +739,15 @@ void func_800E6300(SequenceChannel *channel, unk_5C50_s *arg1) {
 }
 
 void func_800E64B0(s32 arg0, s32 arg1, s32 arg2) {
-    func_800E5AFC(((arg0 & 0xFF) << 0x10) | 0xFA000000 | ((arg1 & 0xFF) << 8) | (arg2 & 0xFF), 1);
+    Audio_SendMsg_u32(AUDIO_CMD(0xFA, arg0, arg1, arg2), 1);
 }
 
 void func_800E64F8(void) {
-    func_800E5AFC(0xFA000000, 0);
+    Audio_SendMsg_u32(AUDIO_CMD(0xFA, 0, 0, 0), 0);
 }
 
 void func_800E651C(u32 arg0, s32 arg1) {
-    func_800E5AFC((arg1 & 0xFF) | 0xFD000000, arg0);
+    Audio_SendMsg_u32(AUDIO_CMD(0xFD, 0, 0, arg1), arg0);
 }
 
 void func_800E6550(void) {

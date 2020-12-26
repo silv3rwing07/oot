@@ -175,7 +175,7 @@ glabel func_800F4E30
 /* B6C21C 800F507C 000A5A00 */  sll   $t3, $t2, 8
 /* B6C220 800F5080 00142E00 */  sll   $a1, $s4, 0x18
 /* B6C224 800F5084 00052E03 */  sra   $a1, $a1, 0x18
-/* B6C228 800F5088 0C0396C8 */  jal   func_800E5B20
+/* B6C228 800F5088 0C0396C8 */  jal   Audio_SendMsg_s8
 /* B6C22C 800F508C 01732025 */   or    $a0, $t3, $s3
 /* B6C230 800F5090 26100001 */  addiu $s0, $s0, 1
 .L800F5094:
@@ -193,4 +193,3 @@ glabel func_800F4E30
 /* B6C260 800F50C0 8FB40038 */  lw    $s4, 0x38($sp)
 /* B6C264 800F50C4 03E00008 */  jr    $ra
 /* B6C268 800F50C8 27BD0040 */   addiu $sp, $sp, 0x40
-

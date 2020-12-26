@@ -106,8 +106,8 @@ glabel func_800ED200
 /* B6451C 800ED37C 020E7824 */  and   $t7, $s0, $t6
 /* B64520 800ED380 11E0002B */  beqz  $t7, .L800ED430
 /* B64524 800ED384 000BC0C0 */   sll   $t8, $t3, 3
-/* B64528 800ED388 3C198013 */  lui   $t9, %hi(sOcarinaSongNotes) # $t9, 0x8013
-/* B6452C 800ED38C 27391C00 */  addiu $t9, %lo(sOcarinaSongNotes) # addiu $t9, $t9, 0x1c00
+/* B64528 800ED388 3C198013 */  lui   $t9, %hi(sOcarinaDetectableSongs) # $t9, 0x8013
+/* B6452C 800ED38C 27391C00 */  addiu $t9, %lo(sOcarinaDetectableSongs) # addiu $t9, $t9, 0x1c00
 /* B64530 800ED390 030BC021 */  addu  $t8, $t8, $t3
 /* B64534 800ED394 03194021 */  addu  $t0, $t8, $t9
 /* B64538 800ED398 91060000 */  lbu   $a2, ($t0)
@@ -165,4 +165,3 @@ glabel func_800ED200
 /* B645EC 800ED44C 27BD0020 */  addiu $sp, $sp, 0x20
 /* B645F0 800ED450 03E00008 */  jr    $ra
 /* B645F4 800ED454 00000000 */   nop   
-
