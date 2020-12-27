@@ -239,8 +239,24 @@ void AudioOcarina_SetAltControl(u8 custom) {
 }
 
 void PadMgr_RequestPadData(PadMgr* padmgr, Input* inputs, s32 mode);
-void func_800ECA00(void);
+
+#ifdef NON_MATCHING
+//Small reordering but could not figure out. lui shared by sOcarinaStickX and Y.
+//Seems like their data type is wrong, but putting them in a struct made things
+//worse.
+void func_800ECA00(){
+    Input inputs[4];
+    u32 temp2;
+    u32 temp = sCurOcarinaBtnPress;
+    PadMgr_RequestPadData(&gPadMgr, inputs, 0);
+    sCurOcarinaBtnPress = inputs[0].cur.button;
+    sPrevOcarinaBtnPress = temp;
+    sOcarinaStickX = inputs[0].rel.stick_x;
+    sOcarinaStickY = inputs[0].rel.stick_y;
+}
+#else
 #pragma GLOBAL_ASM("asm/non_matchings/code/code_800EC960/func_800ECA00.s")
+#endif
 
 // adju stick input f32
 f32 AudioOcarina_NormalizePitch(s8 inp) {
@@ -2508,7 +2524,7 @@ typedef struct {
 extern D_801306DC_s D_801306DC[];
 
 void func_800F6D58(u8 arg0, u8 arg1, u8 arg2);
-#ifdef NON_MATCING
+#ifdef NON_MATCHING
 void func_800F6D58(u8 arg0, u8 arg1, u8 arg2) {
     s32 sp34;
     u8 temp_a0;
