@@ -347,9 +347,9 @@ glabel func_8010B820
 /* B82E10 8010BC70 3C048015 */   lui   $a0, %hi(D_80154434) # $a0, 0x8015
 /* B82E14 8010BC74 0C00084C */  jal   osSyncPrintf
 /* B82E18 8010BC78 24844434 */   addiu $a0, %lo(D_80154434) # addiu $a0, $a0, 0x4434
-/* B82E1C 8010BC7C 0C03B616 */  jal   func_800ED858
+/* B82E1C 8010BC7C 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B82E20 8010BC80 24040001 */   li    $a0, 1
-/* B82E24 8010BC84 0C03B616 */  jal   func_800ED858
+/* B82E24 8010BC84 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B82E28 8010BC88 24040001 */   li    $a0, 1
 /* B82E2C 8010BC8C 0C03B8FE */  jal   AudioOcarina_GetDisplayedStaff
 /* B82E30 8010BC90 00000000 */   nop   
@@ -373,7 +373,7 @@ glabel func_8010B820
 /* B82E78 8010BCD8 A02863E8 */  sb    $t0, 0x63e8($at)
 /* B82E7C 8010BCDC A0296305 */  sb    $t1, 0x6305($at)
 /* B82E80 8010BCE0 2404000F */  li    $a0, 15
-/* B82E84 8010BCE4 0C03B64F */  jal   func_800ED93C
+/* B82E84 8010BCE4 0C03B64F */  jal   AudioOcarina_SetSong
 /* B82E88 8010BCE8 24050001 */   li    $a1, 1
 /* B82E8C 8010BCEC 3C018016 */  lui   $at, %hi(gSaveContext+0x13ea) # $at, 0x8016
 /* B82E90 8010BCF0 A420FA4A */  sh    $zero, %lo(gSaveContext+0x13ea)($at)

@@ -147,10 +147,10 @@ glabel func_80B00C38
 /* 02BA4 80B00E54 00000000 */  nop
 /* 02BA8 80B00E58 A04902D8 */  sb      $t1, 0x02D8($v0)           ## 80B002D8
 .L80B00E5C:
-/* 02BAC 80B00E5C 0C03B616 */  jal     func_800ED858              
+/* 02BAC 80B00E5C 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 02BB0 80B00E60 A60A02CA */  sh      $t2, 0x02CA($s0)           ## 80B01912
 /* 02BB4 80B00E64 2404000E */  addiu   $a0, $zero, 0x000E         ## $a0 = 0000000E
-/* 02BB8 80B00E68 0C03B64F */  jal     func_800ED93C              
+/* 02BB8 80B00E68 0C03B64F */  jal     AudioOcarina_SetSong              
 /* 02BBC 80B00E6C 24050001 */  addiu   $a1, $zero, 0x0001         ## $a1 = 00000001
 /* 02BC0 80B00E70 3C010001 */  lui     $at, 0x0001                ## $at = 00010000
 /* 02BC4 80B00E74 00310821 */  addu    $at, $at, $s1              

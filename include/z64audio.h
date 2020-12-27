@@ -1125,4 +1125,21 @@ typedef struct {
     /* 0x0000 */ OcarinaTeachNote notes[20];
 } OcarinaTeachSong; // size = 0xA0
 
+enum {
+    OCA_SONG_FOREST, //0
+    OCA_SONG_FIRE, //1
+    OCA_SONG_WATER, //2
+    OCA_SONG_SPIRIT, //3
+    OCA_SONG_SHADOW, //4
+    OCA_SONG_LIGHT, //5
+    OCA_SONG_SARIA, //6
+    OCA_SONG_EPONA, //7
+    OCA_SONG_ZELDA, //8
+    OCA_SONG_SUN, //9
+    OCA_SONG_TIME, //A
+    OCA_SONG_STORMS, //B
+    OCA_SONG_SHORTSCARECROW, //C
+    OCA_SONG_MEMORYGAME //D
+};
+
 #endif

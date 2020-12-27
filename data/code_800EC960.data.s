@@ -147,7 +147,7 @@ glabel sOcarinaCDownBtnMap
 glabel sOcarinaInpEnabled
     .incbin "baserom.z64", 0xBA80AC, 0x4
 
-glabel D_80130F10
+glabel sOcarinaInstrument
     .incbin "baserom.z64", 0xBA80B0, 0x4
 
 glabel sCurOcarinaBtnVal
@@ -162,22 +162,22 @@ glabel sCurOcarinaBtnIdx
 glabel D_80130F20
     .incbin "baserom.z64", 0xBA80C0, 0x4
 
-glabel D_80130F24
+glabel sCurOcarinaFloatPitch
     .incbin "baserom.z64", 0xBA80C4, 0x4
 
-glabel D_80130F28
+glabel sOcarinaDefaultVolume
     .incbin "baserom.z64", 0xBA80C8, 0x4
 
-glabel D_80130F2C
+glabel sCurOcarinaRawPitch
     .incbin "baserom.z64", 0xBA80CC, 0x4
 
-glabel D_80130F30
+glabel sCurOcarinaVolume
     .incbin "baserom.z64", 0xBA80D0, 0x4
 
-glabel D_80130F34
+glabel sCurOcarinaVibrato
     .incbin "baserom.z64", 0xBA80D4, 0x4
 
-glabel sPlaybackState
+glabel sPlaybackSomeCounter
     .incbin "baserom.z64", 0xBA80D8, 0x4
 
 glabel D_80130F3C
@@ -207,16 +207,16 @@ glabel sNotePlaybackVolume
 glabel sNotePlaybackVibrato
     .incbin "baserom.z64", 0xBA80F8, 0x4
 
-glabel sNotePlaybackTone
+glabel sNotePlaybackPitch
     .incbin "baserom.z64", 0xBA80FC, 0x4
 
-glabel sNormalizedNotePlaybackTone
+glabel sNormalizedNotePlaybackPitch
     .incbin "baserom.z64", 0xBA8100, 0x4
 
 glabel sNormalizedNotePlaybackVolume
     .incbin "baserom.z64", 0xBA8104, 0x4
 
-glabel D_80130F68
+glabel sOcarinaLastTime
     .incbin "baserom.z64", 0xBA8108, 0x4
 
 glabel sOcarinaNoteValues
@@ -243,28 +243,28 @@ glabel D_80131844
 glabel D_80131854
     .word D_80131844
 
-glabel D_80131858
+glabel sOcarinaRecordMode
     .incbin "baserom.z64", 0xBA89F8, 0x4
 
 glabel sRecordSongPos
     .incbin "baserom.z64", 0xBA89FC, 0x4
 
-glabel D_80131860
+glabel sOcarinaNoteStartT
     .incbin "baserom.z64", 0xBA8A00, 0x4
 
-glabel D_80131864
+glabel sLastOcarinaBtnVal
     .incbin "baserom.z64", 0xBA8A04, 0x4
 
-glabel D_80131868
+glabel sLastOcarinaVolume
     .incbin "baserom.z64", 0xBA8A08, 0x4
 
-glabel D_8013186C
+glabel sLastOcarinaVibrato
     .incbin "baserom.z64", 0xBA8A0C, 0x4
 
-glabel D_80131870
+glabel sLastOcarinaRawPitch
     .incbin "baserom.z64", 0xBA8A10, 0x4
 
-glabel D_80131874
+glabel sLastOcarinaBtnIdx
     .incbin "baserom.z64", 0xBA8A14, 0x4
 
 glabel D_80131878

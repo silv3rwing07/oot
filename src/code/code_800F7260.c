@@ -111,13 +111,13 @@ void func_800F7260(u16 arg0) {
     }
 }
 
-void func_800F72B8(u8 arg0) {
+void Audio_SetSomeBit(u8 arg0) {
     D_801333D0 |= (1 << arg0);
     func_800FA240(0, 2, 0x40, 0xF);
     func_800FA240(3, 2, 0x40, 0xF);
 }
 
-void func_800F731C(u8 arg0) {
+void Audio_ClearSomeBit(u8 arg0) {
     D_801333D0 &= ((1 << arg0) ^ 0xFFFF);
     if (D_801333D0 == 0) {
         func_800FA240(0, 2, 0x7F, 0xF);
@@ -262,7 +262,7 @@ void func_800F7680(void) {
                 if (D_80130594[phi_s5][D_801333CC] == phi_t4) {
                     if ((phi_t2->sfxId & 0xC00) || (temp_a2->unk_2 & 4) || phi_a1 == phi_s1) {
                         if ((gSoundBanks[phi_s5][phi_a1].unk_26 & 8) && gSoundBanks[phi_s5][phi_a1].unk_2A != 1) {
-                            func_800F731C(gSoundBanks[phi_s5][phi_a1].unk_2E);
+                            Audio_ClearSomeBit(gSoundBanks[phi_s5][phi_a1].unk_2E);
                         }
                         gSoundBanks[phi_s5][phi_a1].unk_C = phi_t2->unk_8;
                         gSoundBanks[phi_s5][phi_a1].unk_28 = phi_t2->sfxId;
@@ -320,7 +320,7 @@ void func_800F7B54(u8 bankId, u8 bankIndex) {
     u8 i;
 
     if (entry->unk_26 & 8) {
-        func_800F731C(entry->unk_2E);
+        Audio_ClearSomeBit(entry->unk_2E);
     }
     if (bankIndex == D_8016E1A0[bankId]) {
         D_8016E1A0[bankId] = entry->prev;
@@ -358,7 +358,7 @@ void func_800F8480(u8 bankId) {
             if (entry->unk_2A == 2) {
                 entry->unk_2E = D_8016E260;
                 if (entry->unk_26 & 8) {
-                    func_800F72B8(D_8016E260);
+                    Audio_SetSomeBit(D_8016E260);
                 }
                 if (entry->unk_26 & 0xC0) {
                     switch (entry->unk_26 & 0xC0) {
@@ -518,7 +518,7 @@ void func_800F8BA0(u8 arg0, u16 sfxId) {
     func_800F74E0(4, &sp58);
 }
 
-void func_800F8D04(u32 sfxId) {
+void Audio_StopSFX(u32 sfxId) {
     SoundBankEntry* entry;
     u8 bankIndex = gSoundBanks[SFX_BANK(sfxId)][0].next;
     u8 bankIndex2 = 0;

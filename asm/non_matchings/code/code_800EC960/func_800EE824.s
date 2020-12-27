@@ -32,7 +32,7 @@ glabel func_800EE824
 .L800EE898:
 /* B65A38 800EE898 24050003 */  li    $a1, 3
 /* B65A3C 800EE89C 3C018013 */  lui   $at, %hi(D_80131C80) # $at, 0x8013
-/* B65A40 800EE8A0 0C03B616 */  jal   func_800ED858
+/* B65A40 800EE8A0 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B65A44 800EE8A4 A0251C80 */   sb    $a1, %lo(D_80131C80)($at)
 .L800EE8A8:
 /* B65A48 800EE8A8 240304B0 */  li    $v1, 1200
@@ -43,10 +43,10 @@ glabel func_800EE824
 /* B65A58 800EE8B8 0C03DC98 */  jal   func_800F7260
 /* B65A5C 800EE8BC 00002025 */   move  $a0, $zero
 /* B65A60 800EE8C0 3C048013 */  lui   $a0, %hi(D_80131C84) # $a0, 0x8013
-/* B65A64 800EE8C4 0C03B616 */  jal   func_800ED858
+/* B65A64 800EE8C4 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B65A68 800EE8C8 90841C84 */   lbu   $a0, %lo(D_80131C84)($a0)
 /* B65A6C 800EE8CC 2404000F */  li    $a0, 15
-/* B65A70 800EE8D0 0C03B64F */  jal   func_800ED93C
+/* B65A70 800EE8D0 0C03B64F */  jal   AudioOcarina_SetSong
 /* B65A74 800EE8D4 24050001 */   li    $a1, 1
 /* B65A78 800EE8D8 3C0F8013 */  lui   $t7, %hi(D_80131C84) # $t7, 0x8013
 /* B65A7C 800EE8DC 91EF1C84 */  lbu   $t7, %lo(D_80131C84)($t7)

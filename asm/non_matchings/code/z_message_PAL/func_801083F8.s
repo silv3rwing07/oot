@@ -85,9 +85,9 @@ glabel func_801083F8
 /* B7F60C 8010846C 3C048015 */   lui   $a0, %hi(D_80153EFC) # $a0, 0x8015
 /* B7F610 80108470 0C00084C */  jal   osSyncPrintf
 /* B7F614 80108474 24843EFC */   addiu $a0, %lo(D_80153EFC) # addiu $a0, $a0, 0x3efc
-/* B7F618 80108478 0C03B616 */  jal   func_800ED858
+/* B7F618 80108478 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7F61C 8010847C 24040001 */   li    $a0, 1
-/* B7F620 80108480 0C03B616 */  jal   func_800ED858
+/* B7F620 80108480 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7F624 80108484 24040001 */   li    $a0, 1
 /* B7F628 80108488 0C03B8FE */  jal   AudioOcarina_GetDisplayedStaff
 /* B7F62C 8010848C 00000000 */   nop   
@@ -111,7 +111,7 @@ glabel func_801083F8
 /* B7F674 801084D4 A02D63E8 */  sb    $t5, 0x63e8($at)
 /* B7F678 801084D8 A02E6305 */  sb    $t6, 0x6305($at)
 /* B7F67C 801084DC 2404000F */  li    $a0, 15
-/* B7F680 801084E0 0C03B64F */  jal   func_800ED93C
+/* B7F680 801084E0 0C03B64F */  jal   AudioOcarina_SetSong
 /* B7F684 801084E4 24050001 */   li    $a1, 1
 /* B7F688 801084E8 10000068 */  b     .L8010868C
 /* B7F68C 801084EC 8FB90024 */   lw    $t9, 0x24($sp)
@@ -132,9 +132,9 @@ glabel func_801083F8
 /* B7F6C0 80108520 3C048015 */   lui   $a0, %hi(D_80153F54) # $a0, 0x8015
 /* B7F6C4 80108524 0C00084C */  jal   osSyncPrintf
 /* B7F6C8 80108528 24843F54 */   addiu $a0, %lo(D_80153F54) # addiu $a0, $a0, 0x3f54
-/* B7F6CC 8010852C 0C03B616 */  jal   func_800ED858
+/* B7F6CC 8010852C 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7F6D0 80108530 24040001 */   li    $a0, 1
-/* B7F6D4 80108534 0C03B616 */  jal   func_800ED858
+/* B7F6D4 80108534 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7F6D8 80108538 24040001 */   li    $a0, 1
 /* B7F6DC 8010853C 0C03B8FE */  jal   AudioOcarina_GetDisplayedStaff
 /* B7F6E0 80108540 00000000 */   nop   
@@ -158,7 +158,7 @@ glabel func_801083F8
 /* B7F728 80108588 A02B63E8 */  sb    $t3, 0x63e8($at)
 /* B7F72C 8010858C A02A6305 */  sb    $t2, 0x6305($at)
 /* B7F730 80108590 2404000D */  li    $a0, 13
-/* B7F734 80108594 0C03B64F */  jal   func_800ED93C
+/* B7F734 80108594 0C03B64F */  jal   AudioOcarina_SetSong
 /* B7F738 80108598 24050001 */   li    $a1, 1
 /* B7F73C 8010859C 1000003B */  b     .L8010868C
 /* B7F740 801085A0 8FB90024 */   lw    $t9, 0x24($sp)

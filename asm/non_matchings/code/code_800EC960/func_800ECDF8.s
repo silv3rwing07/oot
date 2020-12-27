@@ -12,10 +12,10 @@ glabel func_800ECDF8
 /* B63FC0 800ECE20 A3A00057 */   sb    $zero, 0x57($sp)
 /* B63FC4 800ECE24 3C0E8017 */  lui   $t6, %hi(sOcarinaHasStartedSong) # $t6, 0x8017
 /* B63FC8 800ECE28 91CEBA29 */  lbu   $t6, %lo(sOcarinaHasStartedSong)($t6)
-/* B63FCC 800ECE2C 3C028013 */  lui   $v0, %hi(D_80130F2C) # $v0, 0x8013
+/* B63FCC 800ECE2C 3C028013 */  lui   $v0, %hi(sCurOcarinaRawPitch) # $v0, 0x8013
 /* B63FD0 800ECE30 51C000EB */  beql  $t6, $zero, .L800ED1E0
 /* B63FD4 800ECE34 8FBF002C */   lw    $ra, 0x2c($sp)
-/* B63FD8 800ECE38 80420F2C */  lb    $v0, %lo(D_80130F2C)($v0)
+/* B63FD8 800ECE38 80420F2C */  lb    $v0, %lo(sCurOcarinaRawPitch)($v0)
 /* B63FDC 800ECE3C 3C0F8013 */  lui   $t7, %hi(sCurOcarinaBtnVal) # $t7, 0x8013
 /* B63FE0 800ECE40 3C188013 */  lui   $t8, %hi(sPrevOcarinaNoteVal) # $t8, 0x8013
 /* B63FE4 800ECE44 04410003 */  bgez  $v0, .L800ECE54
@@ -54,8 +54,8 @@ glabel func_800ECDF8
 /* B64058 800ECEB8 3C138017 */  lui   $s3, %hi(D_8016BA30) # $s3, 0x8017
 /* B6405C 800ECEBC 3C128013 */  lui   $s2, %hi(D_80130F20) # $s2, 0x8013
 /* B64060 800ECEC0 3C118017 */  lui   $s1, %hi(D_8016BA90) # $s1, 0x8017
-/* B64064 800ECEC4 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
-/* B64068 800ECEC8 2442BA2E */  addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B64064 800ECEC4 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
+/* B64068 800ECEC8 2442BA2E */  addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 /* B6406C 800ECECC 2631BA90 */  addiu $s1, %lo(D_8016BA90) # addiu $s1, $s1, -0x4570
 /* B64070 800ECED0 26520F20 */  addiu $s2, %lo(D_80130F20) # addiu $s2, $s2, 0xf20
 /* B64074 800ECED4 2673BA30 */  addiu $s3, %lo(D_8016BA30) # addiu $s3, $s3, -0x45d0
@@ -109,9 +109,9 @@ glabel func_800ECDF8
 /* B64130 800ECF90 3C018013 */  lui   $at, %hi(D_80130F3C) # $at, 0x8013
 /* B64134 800ECF94 AC200F3C */  sw    $zero, %lo(D_80130F3C)($at)
 .L800ECF98:
-/* B64138 800ECF98 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
+/* B64138 800ECF98 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
 /* B6413C 800ECF9C 10000063 */  b     .L800ED12C
-/* B64140 800ECFA0 2442BA2E */   addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B64140 800ECFA0 2442BA2E */   addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 .L800ECFA4:
 /* B64144 800ECFA4 94620000 */  lhu   $v0, ($v1)
 /* B64148 800ECFA8 2499FFEE */  addiu $t9, $a0, -0x12
@@ -197,18 +197,18 @@ glabel func_800ECDF8
 /* B64274 800ED0D4 55E0FFED */  bnezl $t7, .L800ED08C
 /* B64278 800ED0D8 95180000 */   lhu   $t8, ($t0)
 .L800ED0DC:
-/* B6427C 800ED0DC 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
+/* B6427C 800ED0DC 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
 /* B64280 800ED0E0 10000012 */  b     .L800ED12C
-/* B64284 800ED0E4 2442BA2E */   addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B64284 800ED0E4 2442BA2E */   addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 .L800ED0E8:
 /* B64288 800ED0E8 2841000A */  slti  $at, $v0, 0xa
 /* B6428C 800ED0EC 10200008 */  beqz  $at, .L800ED110
 /* B64290 800ED0F0 2418FFFF */   li    $t8, -1
 /* B64294 800ED0F4 8FB90040 */  lw    $t9, 0x40($sp)
-/* B64298 800ED0F8 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
+/* B64298 800ED0F8 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
 /* B6429C 800ED0FC A3B80057 */  sb    $t8, 0x57($sp)
 /* B642A0 800ED100 A4600000 */  sh    $zero, ($v1)
-/* B642A4 800ED104 2442BA2E */  addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B642A4 800ED104 2442BA2E */  addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 /* B642A8 800ED108 10000008 */  b     .L800ED12C
 /* B642AC 800ED10C A2590000 */   sb    $t9, ($s2)
 .L800ED110:
@@ -216,8 +216,8 @@ glabel func_800ECDF8
 /* B642B4 800ED114 3C018017 */  lui   $at, %hi(sOcarinaAvailSongs) # $at, 0x8017
 /* B642B8 800ED118 A42EBA2C */  sh    $t6, %lo(sOcarinaAvailSongs)($at)
 /* B642BC 800ED11C 3C108017 */  lui   $s0, %hi(sOcarinaAvailSongs) # $s0, 0x8017
-/* B642C0 800ED120 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
-/* B642C4 800ED124 2442BA2E */  addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B642C0 800ED120 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
+/* B642C4 800ED124 2442BA2E */  addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 /* B642C8 800ED128 9610BA2C */  lhu   $s0, %lo(sOcarinaAvailSongs)($s0)
 .L800ED12C:
 /* B642CC 800ED12C 16000018 */  bnez  $s0, .L800ED190
@@ -256,11 +256,11 @@ glabel func_800ECDF8
 /* B64344 800ED1A4 03E03025 */   move  $a2, $ra
 .L800ED1A8:
 /* B64348 800ED1A8 93AE005B */  lbu   $t6, 0x5b($sp)
-/* B6434C 800ED1AC 3C028017 */  lui   $v0, %hi(D_8016BA2E) # $v0, 0x8017
+/* B6434C 800ED1AC 3C028017 */  lui   $v0, %hi(sRecordSongLen) # $v0, 0x8017
 /* B64350 800ED1B0 3C128013 */  lui   $s2, %hi(D_80130F20) # $s2, 0x8013
 /* B64354 800ED1B4 26520F20 */  addiu $s2, %lo(D_80130F20) # addiu $s2, $s2, 0xf20
 /* B64358 800ED1B8 15C00008 */  bnez  $t6, .L800ED1DC
-/* B6435C 800ED1BC 2442BA2E */   addiu $v0, %lo(D_8016BA2E) # addiu $v0, $v0, -0x45d2
+/* B6435C 800ED1BC 2442BA2E */   addiu $v0, %lo(sRecordSongLen) # addiu $v0, $v0, -0x45d2
 /* B64360 800ED1C0 8FAF0040 */  lw    $t7, 0x40($sp)
 /* B64364 800ED1C4 90580000 */  lbu   $t8, ($v0)
 /* B64368 800ED1C8 83B90057 */  lb    $t9, 0x57($sp)

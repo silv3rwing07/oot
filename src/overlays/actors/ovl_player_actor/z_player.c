@@ -1342,7 +1342,7 @@ void func_808326F0(Player* this) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        func_800F8D04((u16)(*entry + this->ageProperties->unk_92));
+        Audio_StopSFX((u16)(*entry + this->ageProperties->unk_92));
         entry++;
     }
 }
@@ -2669,7 +2669,7 @@ s32 func_80835C58(GlobalContext* globalCtx, Player* this, PlayerFunc674 func, s3
     }
 
     if (func_8084E3C4 == this->func_674) {
-        func_800ED858(0);
+        AudioOcarina_SetInstrument(0);
         this->stateFlags2 &= ~0x3000000;
     } else if (func_808507F4 == this->func_674) {
         func_80832340(globalCtx, this);

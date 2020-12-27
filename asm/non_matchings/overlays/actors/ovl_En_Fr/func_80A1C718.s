@@ -16,7 +16,7 @@ glabel func_80A1C718
 /* 01DAC 80A1C74C 0C01E221 */  jal     func_80078884              
 /* 01DB0 80A1C750 24044802 */  addiu   $a0, $zero, 0x4802         ## $a0 = 00004802
 .L80A1C754:
-/* 01DB4 80A1C754 0C03B616 */  jal     func_800ED858              
+/* 01DB4 80A1C754 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 01DB8 80A1C758 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 01DBC 80A1C75C 8FB8001C */  lw      $t8, 0x001C($sp)           
 /* 01DC0 80A1C760 3C010001 */  lui     $at, 0x0001                ## $at = 00010000

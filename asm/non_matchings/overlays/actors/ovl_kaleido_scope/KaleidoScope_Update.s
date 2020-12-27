@@ -1555,7 +1555,7 @@ glabel L80827D8C
 /* 14580 80827DA0 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 14584 80827DA4 570006E7 */  bnel    $t8, $zero, .L80829944     
 /* 14588 80827DA8 8FBF0024 */  lw      $ra, 0x0024($sp)           
-/* 1458C 80827DAC 0C03B616 */  jal     func_800ED858              
+/* 1458C 80827DAC 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 14590 80827DB0 A60E01E4 */  sh      $t6, 0x01E4($s0)           ## 000001E4
 /* 14594 80827DB4 100006E3 */  beq     $zero, $zero, .L80829944   
 /* 14598 80827DB8 8FBF0024 */  lw      $ra, 0x0024($sp)           
@@ -1575,7 +1575,7 @@ glabel L80827DCC
 /* 145C8 80827DE8 00617827 */  nor     $t7, $v1, $at              
 /* 145CC 80827DEC 15E00011 */  bne     $t7, $zero, .L80827E34     
 /* 145D0 80827DF0 2401BFFF */  addiu   $at, $zero, 0xBFFF         ## $at = FFFFBFFF
-/* 145D4 80827DF4 0C03B616 */  jal     func_800ED858              
+/* 145D4 80827DF4 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 145D8 80827DF8 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 145DC 80827DFC 02202025 */  or      $a0, $s1, $zero            ## $a0 = 00000000
 /* 145E0 80827E00 0C021BC0 */  jal     Interface_SetDoAction              
@@ -1595,7 +1595,7 @@ glabel L80827DCC
 /* 14614 80827E34 00617827 */  nor     $t7, $v1, $at              
 /* 14618 80827E38 55E00021 */  bnel    $t7, $zero, .L80827EC0     
 /* 1461C 80827E3C 8E0F0194 */  lw      $t7, 0x0194($s0)           ## 00000194
-/* 14620 80827E40 0C03B616 */  jal     func_800ED858              
+/* 14620 80827E40 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 14624 80827E44 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 14628 80827E48 3C078013 */  lui     $a3, %hi(D_801333E0)
 /* 1462C 80827E4C 3C198013 */  lui     $t9, %hi(D_801333E8)
@@ -1690,7 +1690,7 @@ glabel L80827F70
 /* 14778 80827F98 31CFFFFF */  andi    $t7, $t6, 0xFFFF           ## $t7 = 00000000
 /* 1477C 80827F9C 15E00668 */  bne     $t7, $zero, L80829940     
 /* 14780 80827FA0 A60E01E4 */  sh      $t6, 0x01E4($s0)           ## 000001E4
-/* 14784 80827FA4 0C03B616 */  jal     func_800ED858              
+/* 14784 80827FA4 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 14788 80827FA8 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 1478C 80827FAC 10000665 */  beq     $zero, $zero, .L80829944   
 /* 14790 80827FB0 8FBF0024 */  lw      $ra, 0x0024($sp)           
@@ -1700,7 +1700,7 @@ glabel L80827FB4
 /* 1479C 80827FBC 0061C827 */  nor     $t9, $v1, $at              
 /* 147A0 80827FC0 17200011 */  bne     $t9, $zero, .L80828008     
 /* 147A4 80827FC4 2401BFFF */  addiu   $at, $zero, 0xBFFF         ## $at = FFFFBFFF
-/* 147A8 80827FC8 0C03B616 */  jal     func_800ED858              
+/* 147A8 80827FC8 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 147AC 80827FCC 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 147B0 80827FD0 02202025 */  or      $a0, $s1, $zero            ## $a0 = 00000000
 /* 147B4 80827FD4 0C021BC0 */  jal     Interface_SetDoAction              
@@ -1720,7 +1720,7 @@ glabel L80827FB4
 /* 147E8 80828008 0061C827 */  nor     $t9, $v1, $at              
 /* 147EC 8082800C 5720064D */  bnel    $t9, $zero, .L80829944     
 /* 147F0 80828010 8FBF0024 */  lw      $ra, 0x0024($sp)           
-/* 147F4 80828014 0C03B616 */  jal     func_800ED858              
+/* 147F4 80828014 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 147F8 80828018 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 147FC 8082801C 3C078013 */  lui     $a3, %hi(D_801333E0)
 /* 14800 80828020 3C188013 */  lui     $t8, %hi(D_801333E8)

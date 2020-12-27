@@ -8,7 +8,7 @@ glabel func_80A1C524
 /* 01B9C 80A1C53C 24044827 */  addiu   $a0, $zero, 0x4827         ## $a0 = 00004827
 /* 01BA0 80A1C540 0C01E221 */  jal     func_80078884              
 /* 01BA4 80A1C544 ADC00388 */  sw      $zero, 0x0388($t6)         ## 00000388
-/* 01BA8 80A1C548 0C03B616 */  jal     func_800ED858              
+/* 01BA8 80A1C548 0C03B616 */  jal     AudioOcarina_SetInstrument              
 /* 01BAC 80A1C54C 00002025 */  or      $a0, $zero, $zero          ## $a0 = 00000000
 /* 01BB0 80A1C550 240F000C */  addiu   $t7, $zero, 0x000C         ## $t7 = 0000000C
 /* 01BB4 80A1C554 3C0180A2 */  lui     $at, %hi(D_80A1CFF0)       ## $at = 80A20000

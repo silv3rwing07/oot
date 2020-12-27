@@ -14,7 +14,7 @@ glabel func_80106AA8
 /* B7DC78 80106AD8 24040001 */  li    $a0, 1
 /* B7DC7C 80106ADC 17010019 */  bne   $t8, $at, .L80106B44
 /* B7DC80 80106AE0 24B020D8 */   addiu $s0, $a1, 0x20d8
-/* B7DC84 80106AE4 0C03B616 */  jal   func_800ED858
+/* B7DC84 80106AE4 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7DC88 80106AE8 AFA50030 */   sw    $a1, 0x30($sp)
 /* B7DC8C 80106AEC 0C03B8F5 */  jal   func_800EE3D4
 /* B7DC90 80106AF0 00000000 */   nop   
@@ -46,7 +46,7 @@ glabel func_80106AA8
 /* B7DCF4 80106B54 24040006 */  li    $a0, 6
 /* B7DCF8 80106B58 15410014 */  bne   $t2, $at, .L80106BAC
 /* B7DCFC 80106B5C 00000000 */   nop   
-/* B7DD00 80106B60 0C03B616 */  jal   func_800ED858
+/* B7DD00 80106B60 0C03B616 */  jal   AudioOcarina_SetInstrument
 /* B7DD04 80106B64 AFA30024 */   sw    $v1, 0x24($sp)
 /* B7DD08 80106B68 0C03B8FE */  jal   AudioOcarina_GetDisplayedStaff
 /* B7DD0C 80106B6C 00000000 */   nop   
@@ -60,7 +60,7 @@ glabel func_80106AA8
 /* B7DD2C 80106B8C 8C6C62B8 */  lw    $t4, 0x62b8($v1)
 /* B7DD30 80106B90 2404000E */  li    $a0, 14
 /* B7DD34 80106B94 24050001 */  li    $a1, 1
-/* B7DD38 80106B98 0C03B64F */  jal   func_800ED93C
+/* B7DD38 80106B98 0C03B64F */  jal   AudioOcarina_SetSong
 /* B7DD3C 80106B9C A18B0002 */   sb    $t3, 2($t4)
 /* B7DD40 80106BA0 240D0002 */  li    $t5, 2
 /* B7DD44 80106BA4 26017FFF */  addiu $at, $s0, 0x7fff

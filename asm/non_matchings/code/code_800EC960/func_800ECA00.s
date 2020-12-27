@@ -18,9 +18,9 @@ glabel func_800ECA00
 /* B63BE0 800ECA40 83B90034 */  lb    $t9, 0x34($sp)
 /* B63BE4 800ECA44 83A80035 */  lb    $t0, 0x35($sp)
 /* B63BE8 800ECA48 AC38BA14 */  sw    $t8, %lo(sPrevOcarinaBtnPress)($at)
-/* B63BEC 800ECA4C 3C018017 */  lui   $at, %hi(D_8016BA08) # $at, 0x8017
+/* B63BEC 800ECA4C 3C018017 */  lui   $at, %hi(sOcarinaStickX) # $at, 0x8017
 /* B63BF0 800ECA50 27BD0080 */  addiu $sp, $sp, 0x80
-/* B63BF4 800ECA54 A039BA08 */  sb    $t9, %lo(D_8016BA08)($at)
+/* B63BF4 800ECA54 A039BA08 */  sb    $t9, %lo(sOcarinaStickX)($at)
 /* B63BF8 800ECA58 03E00008 */  jr    $ra
-/* B63BFC 800ECA5C A028BA09 */   sb    $t0, %lo(D_8016BA09)($at)
+/* B63BFC 800ECA5C A028BA09 */   sb    $t0, %lo(sOcarinaStickY)($at)
 

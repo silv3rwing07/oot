@@ -3326,15 +3326,15 @@ glabel L800F12F0
 /* B6860C 800F146C 24050003 */  li    $a1, 3
 /* B68610 800F1470 0C03ED07 */  jal   GfxPrint_SetPos
 /* B68614 800F1474 24060018 */   li    $a2, 24
-/* B68618 800F1478 3C0A8013 */  lui   $t2, %hi(sPlaybackState) # $t2, 0x8013
-/* B6861C 800F147C 3C0B8013 */  lui   $t3, %hi(D_80131858) # $t3, 0x8013
-/* B68620 800F1480 916B1858 */  lbu   $t3, %lo(D_80131858)($t3)
-/* B68624 800F1484 914A0F38 */  lbu   $t2, %lo(sPlaybackState)($t2)
+/* B68618 800F1478 3C0A8013 */  lui   $t2, %hi(sPlaybackSomeCounter) # $t2, 0x8013
+/* B6861C 800F147C 3C0B8013 */  lui   $t3, %hi(sOcarinaRecordMode) # $t3, 0x8013
+/* B68620 800F1480 916B1858 */  lbu   $t3, %lo(sOcarinaRecordMode)($t3)
+/* B68624 800F1484 914A0F38 */  lbu   $t2, %lo(sPlaybackSomeCounter)($t2)
 /* B68628 800F1488 3C058015 */  lui   $a1, %hi(D_8014A2E4) # $a1, 0x8015
-/* B6862C 800F148C 3C068013 */  lui   $a2, %hi(D_80130F10) # $a2, 0x8013
+/* B6862C 800F148C 3C068013 */  lui   $a2, %hi(sOcarinaInstrument) # $a2, 0x8013
 /* B68630 800F1490 3C078013 */  lui   $a3, %hi(D_80130F3C) # $a3, 0x8013
 /* B68634 800F1494 8CE70F3C */  lw    $a3, %lo(D_80130F3C)($a3)
-/* B68638 800F1498 80C60F10 */  lb    $a2, %lo(D_80130F10)($a2)
+/* B68638 800F1498 80C60F10 */  lb    $a2, %lo(sOcarinaInstrument)($a2)
 /* B6863C 800F149C 24A5A2E4 */  addiu $a1, %lo(D_8014A2E4) # addiu $a1, $a1, -0x5d1c
 /* B68640 800F14A0 8FA400B0 */  lw    $a0, 0xb0($sp)
 /* B68644 800F14A4 AFAB0014 */  sw    $t3, 0x14($sp)
