@@ -7,7 +7,6 @@
 
 .section .rodata
 
-# This appears to be a file boundary
 .balign 16
 
 glabel D_80830610

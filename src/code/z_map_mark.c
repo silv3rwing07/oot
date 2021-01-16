@@ -50,7 +50,7 @@ static MapMarkDataOverlay sMapMarkDataOvl = {
     gMapMarkDataTable,
 };
 
-static MapMarksData** sLoadedMarkDataTable;
+static MapMarkData (**sLoadedMarkDataTable)[3];
 
 void MapMark_Init(GlobalContext* globalCtx) {
     MapMarkDataOverlay* overlay = &sMapMarkDataOvl;
@@ -73,7 +73,7 @@ void MapMark_ClearPointers(GlobalContext* globalCtx) {
     sLoadedMarkDataTable = NULL;
 }
 
-void MapMark_Draw(GlobalContext* globalCtx) {
+void MapMark_DrawForDungeon(GlobalContext* globalCtx) {
     InterfaceContext* interfaceCtx;
     MapMarkData* mapMarkData;
     MapMarkPoint* markPoint;
@@ -97,7 +97,7 @@ void MapMark_Draw(GlobalContext* globalCtx) {
 
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_map_mark.c", 303);
 
-    while (1) {
+    while (true) {
         if (mapMarkData->markType == -1) {
             break;
         }
@@ -131,7 +131,7 @@ void MapMark_Draw(GlobalContext* globalCtx) {
     CLOSE_DISPS(globalCtx->state.gfxCtx, "../z_map_mark.c", 339);
 }
 
-void MapMark_DrawConditionally(GlobalContext* globalCtx) {
+void MapMark_Draw(GlobalContext* globalCtx) {
     switch (globalCtx->sceneNum) {
         case SCENE_YDAN:
         case SCENE_DDAN:
@@ -148,6 +148,6 @@ void MapMark_DrawConditionally(GlobalContext* globalCtx) {
         case SCENE_BDAN_BOSS:
         case SCENE_MORIBOSSROOM:
         case SCENE_FIRE_BS:
-            MapMark_Draw(globalCtx);
+            MapMark_DrawForDungeon(globalCtx);
     }
 }

@@ -392,7 +392,7 @@ extern u8 gUpgradeShifts[8];
 extern u16 gUpgradeCapacities[8][4];
 extern u32 D_8012723C[4];
 extern u32 D_8012724C[4];
-extern u32 gItemIcons[0x82];
+extern u8* gItemIcons[130];
 extern u8 gItemSlots[56];
 extern void (*gSceneCmdHandlers[26])(GlobalContext*, SceneCmd*);
 extern s16 gLinkObjectIds[2];
@@ -511,8 +511,9 @@ extern u8 gFontFF[]; // original name: "font_ff"
 //extern ? D_8012D158;
 //extern ? D_8012D170;
 //extern ? D_8012D172;
-extern KaleidoManagerOvl gKaleidoMgrOverlayTable[KALEIDO_OVL_COUNT];
-extern KaleidoManagerOvl* gKaleidoMgrCurOvl;
+extern KaleidoMgrOverlay gKaleidoMgrOverlayTable[KALEIDO_OVL_MAX];
+extern KaleidoMgrOverlay* gKaleidoMgrCurOvl;
+extern u8 D_8012D1E0;
 extern void* D_8012D1F0;
 //extern ? D_8012D200;
 //extern ? D_8012D207;
@@ -3360,6 +3361,8 @@ extern u8 D_801610DA;
 //extern ? D_801612D2;
 //extern ? D_801612EA;
 //extern ? D_801612EC;
+extern f32 D_80161398;
+extern PauseMapMarkData (*gLoadedPauseMarkDataTable)[3];
 extern s32 gTrnsnUnkState;
 extern Color_RGBA8_u32 D_801614B0;
 extern SpeedMeter gSpeedMeter;
@@ -3572,48 +3575,9 @@ extern u8 gGfxSPTaskStack[0x400]; // 0x400 bytes
 extern GfxPool gGfxPools[2]; // 0x24820 bytes
 extern u8 gAudioHeap[0x38000]; // 0x38000 bytes
 extern u8 gSystemHeap[];
-extern MapMarksData* gMapMarkDataTable[];
-//extern ? D_A4040004;
-//extern ? D_A4040008;
-//extern ? D_A404000C;
-//extern ? D_A4040010;
-//extern ? D_A4300008;
-//extern ? D_A430000C;
-//extern ? D_A4400004;
-//extern ? D_A4400008;
-//extern ? D_A440000C;
-//extern ? D_A4400010;
-//extern ? D_A4400014;
-//extern ? D_A4400018;
-//extern ? D_A440001C;
-//extern ? D_A4400020;
-//extern ? D_A4400024;
-//extern ? D_A4400028;
-//extern ? D_A440002C;
-//extern ? D_A4400030;
-//extern ? D_A4400034;
-//extern ? D_A4500004;
-//extern ? D_A4500008;
-//extern ? D_A450000C;
-//extern ? D_A4500010;
-//extern ? D_A4500014;
-//extern ? D_A4600004;
-//extern ? D_A4600005;
-//extern ? D_A4600006;
-//extern ? D_A4600007;
-//extern ? D_A4600008;
-//extern ? D_A460000C;
-//extern ? D_A4600010;
-//extern ? D_A4600014;
-//extern ? D_A4600018;
-//extern ? D_A460001C;
-//extern ? D_A4600020;
-//extern ? D_A4600024;
-//extern ? D_A4600028;
-//extern ? D_A460002C;
-//extern ? D_A4600030;
-//extern ? D_A4800004;
-//extern ? D_A4800010;
-//extern ? D_A4800018;
+
+extern MapMarkData (*gMapMarkDataTable[3])[];
+
+extern u8 D_8082ABFC[];
 
 #endif
