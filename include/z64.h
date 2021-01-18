@@ -812,7 +812,7 @@ typedef struct {
 } TitleContext; // size = 0x1E8
 
 struct SelectContext;
-TODO ERROR;
+
 typedef struct {
     /* 0x00 */ char* name;
     /* 0x04 */ void (*loadFunc)(struct SelectContext*, s32);
