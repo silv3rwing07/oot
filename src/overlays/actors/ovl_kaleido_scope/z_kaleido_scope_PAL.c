@@ -162,12 +162,22 @@ f32 D_8082ABCC[] = {
 
 u16 D_8082ABEC[] = { 1, 3, 2, 0, 3, 1, 0, 2 };
 
-u8 D_8082ABFC[] = {
-    1, 9, 9, 0, 0, 9, 1, 9, 9, 0, 0, 9, 1, 9, 1, 0, 0, 9, 9, 9,
-    9, 9, 0, 1, 0, 1, 0, 0, 9, 1, 9, 0, 0, 9, 0, 0, 9, 9, 0, 0,
+//D_8082ABFC
+u8 gSlotAgeReqs[] = {
+    //clang-format off
+    1, 9, 9, 0, 0, 9,
+    1, 9, 9, 0, 0, 9,
+    1, 9, 1, 0, 0, 9,
+    9, 9, 9, 9, 0, 1,
+    0, 1, 0, 0, 
+    9, 1, 9, 0, 
+    0, 9, 0, 0, 
+    9, 9, 0, 0,
+    //clang-format on
 };
 
-u8 D_8082AC24[] = {
+//D_8082AC24
+u8 gItemAgeReqs[] = {
     1, 9, 9, 0, 0, 9, 1, 9, 9, 9, 0, 0, 0, 9, 1, 9, 1, 0, 0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
     9, 9, 9, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 0, 0, 1, 9, 0, 9, 0, 0, 9, 0, 0, 1, 1, 1, 0, 0, 0, 9, 9, 9, 1, 0, 0, 9, 9, 0,
@@ -302,10 +312,10 @@ void func_8081F6E4(u8* arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_8081F81C(GlobalContext* globalCtx, u16 arg1) {
+void KaleidoScope_MoveCursorToSpecialPos(GlobalContext* globalCtx, u16 specialPos) {
     PauseContext* pauseCtx = &globalCtx->pauseCtx;
 
-    pauseCtx->unk_238 = arg1;
+    pauseCtx->cursorSpecialPos = specialPos;
     pauseCtx->unk_23A = 0;
 
     Audio_PlaySoundGeneral(NA_SE_SY_DECIDE, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
@@ -363,11 +373,11 @@ void func_8081FB7C(PauseContext* pauseCtx, u8 pt) {
     if (!pt) {
         pauseCtx->mode = pauseCtx->kscpPos * 2 + 1;
         Audio_PlaySoundGeneral(NA_SE_SY_WIN_SCROLL_LEFT, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
-        pauseCtx->unk_238 = 11;
+        pauseCtx->cursorSpecialPos = KSCP_CURSOR_SPECIAL_PAGERIGHT;
     } else {
         pauseCtx->mode = pauseCtx->kscpPos * 2;
         Audio_PlaySoundGeneral(NA_SE_SY_WIN_SCROLL_RIGHT, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
-        pauseCtx->unk_238 = 10;
+        pauseCtx->cursorSpecialPos = KSCP_CURSOR_SPECIAL_PAGELEFT;
     }
 
     gSaveContext.buttonStatus[1] = D_8082AB6C[pauseCtx->kscpPos + pt][1];
@@ -397,7 +407,7 @@ void func_8081FCF4(PauseContext* pauseCtx, Input* input) {
         return;
     }
 
-    if (pauseCtx->unk_238 == 10) {
+    if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_SPECIAL_PAGELEFT) {
         if (pauseCtx->stickRelX < -30) {
             pauseCtx->unk_23A++;
             if ((pauseCtx->unk_23A >= 10) || (pauseCtx->unk_23A == 0)) {
@@ -406,7 +416,7 @@ void func_8081FCF4(PauseContext* pauseCtx, Input* input) {
         } else {
             pauseCtx->unk_23A = -1;
         }
-    } else if (pauseCtx->unk_238 == 11) {
+    } else if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_SPECIAL_PAGERIGHT) {
         if (pauseCtx->stickRelX > 30) {
             pauseCtx->unk_23A++;
             if ((pauseCtx->unk_23A >= 10) || (pauseCtx->unk_23A == 0)) {
@@ -712,7 +722,7 @@ void func_80820434(GlobalContext* globalCtx, GraphicsContext* gfxCtx) {
 
                     gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
 
-                    if (pauseCtx->unk_238 == 0) {
+                    if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
                         func_8081FE30(globalCtx, 1);
                     }
 
@@ -739,7 +749,7 @@ void func_80820434(GlobalContext* globalCtx, GraphicsContext* gfxCtx) {
 
                 func_80813820(globalCtx, gfxCtx);
 
-                if (pauseCtx->unk_238 == 0) {
+                if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
                     func_8081FE30(globalCtx, 2);
                 }
                 break;
@@ -757,7 +767,7 @@ void func_80820434(GlobalContext* globalCtx, GraphicsContext* gfxCtx) {
 
                 func_80818340(globalCtx);
 
-                if (pauseCtx->unk_238 == 0) {
+                if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
                     func_8081FE30(globalCtx, 3);
                 }
                 break;
@@ -1090,7 +1100,7 @@ void func_80823548(GlobalContext* globalCtx) {
     u16 sp2A;
 
     if ((pauseCtx->unk_23C != pauseCtx->unk_23E[pauseCtx->kscpPos]) ||
-        ((pauseCtx->kscpPos == 1) && (pauseCtx->unk_238 != 0))) {
+        ((pauseCtx->kscpPos == 1) && (pauseCtx->cursorSpecialPos != KSCP_CURSOR_NORMAL))) {
 
         pauseCtx->unk_23C = pauseCtx->unk_23E[pauseCtx->kscpPos];
         sp2A = pauseCtx->unk_23C;
@@ -1339,7 +1349,7 @@ void func_808267AC(GlobalContext* globalCtx) {
     s32 temp3;
     s32 temp4;
 
-    if (pauseCtx->unk_238 == 0) {
+    if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
         temp1 = -1;
         temp2 = 1;
         temp3 = 14;
@@ -1516,8 +1526,8 @@ void KaleidoScope_Update(GlobalContext* globalCtx) {
 
             gSegments[8] = VIRTUAL_TO_PHYSICAL(pauseCtx->unk_128);
 
-            for (i = 0; i < ARRAY_COUNTU(D_8082AC24); i++) {
-                if ((D_8082AC24[i] != 9) && (D_8082AC24[i] != ((void)0, gSaveContext.linkAge))) {
+            for (i = 0; i < ARRAY_COUNTU(gItemAgeReqs); i++) {
+                if ((gItemAgeReqs[i] != 9) && (gItemAgeReqs[i] != ((void)0, gSaveContext.linkAge))) {
                     func_8082650C(SEGMENTED_TO_VIRTUAL(gItemIcons[i]), 0x400);
                 }
             }

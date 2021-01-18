@@ -246,6 +246,20 @@ typedef enum {
 #define ITEM_TRADE_CHILD ITEM_WEIRD_EGG
 #define ITEM_TRADE_ADULT ITEM_POCKET_EGG
 
+//These belong in some sort of kaleido_scope header, but since that doesn't
+//exist yet, they're here
+#define ITEM_CURSOR_INVALID 999
+#define ITEM_MGARROW_EQUIP_OFFSET 0x87
+#define ITEM_MGARROW_EQUIP_FIRE (ITEM_MGARROW_EQUIP_OFFSET + ITEM_BOW_ARROW_FIRE)
+#define ITEM_MGARROW_EQUIP_END (ITEM_MGARROW_EQUIP_OFFSET + ITEM_BOW_ARROW_LIGHT + 1)
+
+#define KSCP_CURSOR_NORMAL 0
+#define KSCP_CURSOR_SPECIAL_PAGELEFT 10
+#define KSCP_CURSOR_SPECIAL_PAGERIGHT 11
+
+#define SLOT_AGE_EITHER 9
+//end kaleido_scope header
+
 // Get Item result may vary depending on context (chest/shop/scrub/drop)
 typedef enum {
     /* 0x00 */ GI_NONE,

@@ -1,23 +1,35 @@
 #include "ultra64.h"
 #include "global.h"
 
+#define TARGET_ITEM_IS_MAGIC_ARROW \
+    (pauseCtx->equipTargetItem >= ITEM_MGARROW_EQUIP_FIRE) && \
+    (pauseCtx->equipTargetItem < ITEM_MGARROW_EQUIP_END)
+
+#define BUTTON_ITEM_IS_MAGICARROW(n) \
+    ((gSaveContext.equips.buttonItems[n] >= ITEM_BOW_ARROW_FIRE) \
+    && (gSaveContext.equips.buttonItems[n] < (ITEM_BOW_ARROW_LIGHT + 1))) \
+    
+#define BUTTON_ITEM_IS_BOW_OR_MAGICARROW(n) \
+    (gSaveContext.equips.buttonItems[n] == ITEM_BOW) || BUTTON_ITEM_IS_MAGICARROW(n)
+
 // .data
-u8 D_8082A420[] = {
+//D_8082A420
+u8 sSlotAmmoMap[] = {
     SLOT_STICK,    SLOT_NUT,  SLOT_BOMB, SLOT_BOW,  SLOT_NONE, SLOT_NONE, SLOT_SLINGSHOT,   SLOT_NONE,
     SLOT_HOOKSHOT, SLOT_NONE, SLOT_NONE, SLOT_NONE, SLOT_NONE, SLOT_NONE, SLOT_ARROW_LIGHT, SLOT_NONE,
 };
 
-s16 D_8082A430 = 0;
+s16 sEquipAnimState = 0; //D_8082A430
 
-s16 D_8082A434 = 0;
+s16 sEquipAnimTimer = 0; //D_8082A434
 
-s16 D_8082A438 = 10;
+s16 sEquipAnimNumFrames = 10; //D_8082A438
 
-s16 D_8082A43C[] = {
+s16 sAmmoVertexOffset[] = {
     0, 2, 4, 6, 99, 99, 8, 99, 99, 10, 99, 99, 99, 99, 99, 99, 12,
 };
 
-void func_808198A0(PauseContext* pauseCtx, GraphicsContext* gfxCtx, s16 item) {
+void KaleidoScope_DrawInventoryAmmo(PauseContext* pauseCtx, GraphicsContext* gfxCtx, s16 item) {
     s16 ammo;
     s16 i;
 
@@ -27,7 +39,7 @@ void func_808198A0(PauseContext* pauseCtx, GraphicsContext* gfxCtx, s16 item) {
 
     gDPPipeSync(POLY_OPA_DISP++);
 
-    if (!((D_8082ABFC[SLOT(item)] == 9) || D_8082ABFC[SLOT(item)] == ((void)0, gSaveContext.linkAge))) {
+    if (!((gSlotAgeReqs[SLOT(item)] == SLOT_AGE_EITHER) || gSlotAgeReqs[SLOT(item)] == ((void)0, gSaveContext.linkAge))) {
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 100, 100, 100, pauseCtx->unk_208);
     } else {
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, pauseCtx->unk_208);
@@ -51,7 +63,7 @@ void func_808198A0(PauseContext* pauseCtx, GraphicsContext* gfxCtx, s16 item) {
     gDPPipeSync(POLY_OPA_DISP++);
 
     if (i != 0) {
-        gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[(D_8082A43C[item] + 0x1B) * 4], 4, 0);
+        gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[(sAmmoVertexOffset[item] + 0x1B) * 4], 4, 0);
 
         gDPSetTextureImage(POLY_OPA_DISP++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, D_020035C0[i]);
         gDPSetTile(POLY_OPA_DISP++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0x0000, G_TX_LOADTILE, 0, G_TX_NOMIRROR | G_TX_WRAP,
@@ -65,7 +77,7 @@ void func_808198A0(PauseContext* pauseCtx, GraphicsContext* gfxCtx, s16 item) {
         gSP1Quadrangle(POLY_OPA_DISP++, 0, 2, 3, 1, 0);
     }
 
-    gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[(D_8082A43C[item] + 0x1C) * 4], 4, 0);
+    gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[(sAmmoVertexOffset[item] + 0x1C) * 4], 4, 0);
 
     gDPSetTextureImage(POLY_OPA_DISP++, G_IM_FMT_IA, G_IM_SIZ_16b, 1, D_020035C0[ammo]);
     gDPSetTile(POLY_OPA_DISP++, G_IM_FMT_IA, G_IM_SIZ_16b, 0, 0x0000, G_TX_LOADTILE, 0, G_TX_NOMIRROR | G_TX_WRAP,
@@ -87,7 +99,7 @@ void func_80819E14(PauseContext* pauseCtx, u16 arg1, Vtx* arg2) {
 }
 
 void func_80819E40(PauseContext* pauseCtx) {
-    func_80819E14(pauseCtx, pauseCtx->unk_246[0] * 4, pauseCtx->vtx_158);
+    func_80819E14(pauseCtx, pauseCtx->cursorSlotCopy[0] * 4, pauseCtx->vtx_158);
 }
 
 s16 D_8082A460[] = { 255, 100, 255 };
@@ -101,14 +113,14 @@ void func_80819E6C(GlobalContext* globalCtx) {
     Input* input = &globalCtx->state.input[0];
     PauseContext* pauseCtx = &globalCtx->pauseCtx;
     u16 i;
-    u16 spAC;
-    u16 spAA;
-    u16 spA8;
-    s16 phi_s2;
-    s16 spA4;
-    s16 spA2;
-    s16 spA0;
-    s16 sp9E;
+    u16 v;
+    u16 cursorItem; //"ccc"
+    u16 cursorSlot;
+    s16 moveCursorResult; //"ok_fg"
+    s16 oldCursorSlot;
+    s16 oldCursorX;
+    s16 oldCursorY;
+    s16 oldCursorSlot;
 
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_kaleido_item.c", 234);
 
@@ -120,131 +132,131 @@ void func_80819E6C(GlobalContext* globalCtx) {
     pauseCtx->unk_25E = 0;
 
     if ((pauseCtx->state == 6) && (pauseCtx->unk_1E4 == 0) && (pauseCtx->kscpPos == 0)) {
-        phi_s2 = 0;
+        moveCursorResult = 0;
 
-        sp9E = pauseCtx->unk_218[0];
-        spAA = pauseCtx->unk_23E[0];
-        spA8 = pauseCtx->unk_246[0];
+        oldCursorSlot = pauseCtx->cursorSlot[0];
+        cursorItem = pauseCtx->cursorItem[0];
+        cursorSlot = pauseCtx->cursorSlotCopy[0];
 
-        if (pauseCtx->unk_238 == 0) {
+        if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
             pauseCtx->unk_260 = 4;
 
-            if (spAA == 999) {
+            if (cursorItem == ITEM_CURSOR_INVALID) {
                 pauseCtx->stickRelX = 40;
             }
 
             if (ABS(pauseCtx->stickRelX) > 30) {
-                spA4 = pauseCtx->unk_218[0];
-                spA2 = pauseCtx->unk_222[0];
-                spA0 = pauseCtx->unk_22C[0];
+                oldCursorSlot = pauseCtx->cursorSlot[0];
+                oldCursorX = pauseCtx->cursorX[0];
+                oldCursorY = pauseCtx->cursorY[0];
 
-                osSyncPrintf("now=%d  ccc=%d\n", spA4, spAA);
+                osSyncPrintf("now=%d  ccc=%d\n", oldCursorSlot, cursorItem);
 
-                while (phi_s2 == 0) {
+                while (moveCursorResult == 0) {
                     if (pauseCtx->stickRelX < -30) {
-                        if (pauseCtx->unk_222[0] != 0) {
-                            pauseCtx->unk_222[0] = pauseCtx->unk_222[0] - 1;
-                            pauseCtx->unk_218[0] = pauseCtx->unk_218[0] - 1;
+                        if (pauseCtx->cursorX[0] != 0) {
+                            pauseCtx->cursorX[0] = pauseCtx->cursorX[0] - 1;
+                            pauseCtx->cursorSlot[0] = pauseCtx->cursorSlot[0] - 1;
 
-                            if (gSaveContext.inventory.items[pauseCtx->unk_218[0]] != ITEM_NONE) {
-                                phi_s2 = 1;
+                            if (gSaveContext.inventory.items[pauseCtx->cursorSlot[0]] != ITEM_NONE) {
+                                moveCursorResult = 1;
                             }
                         } else {
-                            pauseCtx->unk_222[0] = spA2;
-                            pauseCtx->unk_22C[0] = pauseCtx->unk_22C[0] + 1;
+                            pauseCtx->cursorX[0] = oldCursorX;
+                            pauseCtx->cursorY[0] = pauseCtx->cursorY[0] + 1;
 
-                            if (pauseCtx->unk_22C[0] >= 4) {
-                                pauseCtx->unk_22C[0] = 0;
+                            if (pauseCtx->cursorY[0] >= 4) {
+                                pauseCtx->cursorY[0] = 0;
                             }
 
-                            pauseCtx->unk_218[0] = (pauseCtx->unk_22C[0] * 6) + pauseCtx->unk_222[0];
+                            pauseCtx->cursorSlot[0] = (pauseCtx->cursorY[0] * 6) + pauseCtx->cursorX[0];
 
-                            if (pauseCtx->unk_218[0] >= 24) {
-                                pauseCtx->unk_218[0] = pauseCtx->unk_222[0];
+                            if (pauseCtx->cursorSlot[0] >= 24) {
+                                pauseCtx->cursorSlot[0] = pauseCtx->cursorX[0];
                             }
 
-                            if (spA0 == pauseCtx->unk_22C[0]) {
-                                pauseCtx->unk_222[0] = spA2;
-                                pauseCtx->unk_218[0] = spA4;
+                            if (oldCursorY == pauseCtx->cursorY[0]) {
+                                pauseCtx->cursorX[0] = oldCursorX;
+                                pauseCtx->cursorSlot[0] = oldCursorSlot;
 
-                                func_8081F81C(globalCtx, 10);
+                                KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGELEFT);
 
-                                phi_s2 = 2;
+                                moveCursorResult = 2;
                             }
                         }
                     } else if (pauseCtx->stickRelX > 30) {
-                        if (pauseCtx->unk_222[0] < 5) {
-                            pauseCtx->unk_222[0] = pauseCtx->unk_222[0] + 1;
-                            pauseCtx->unk_218[0] = pauseCtx->unk_218[0] + 1;
+                        if (pauseCtx->cursorX[0] < 5) {
+                            pauseCtx->cursorX[0] = pauseCtx->cursorX[0] + 1;
+                            pauseCtx->cursorSlot[0] = pauseCtx->cursorSlot[0] + 1;
 
-                            if (gSaveContext.inventory.items[pauseCtx->unk_218[0]] != ITEM_NONE) {
-                                phi_s2 = 1;
+                            if (gSaveContext.inventory.items[pauseCtx->cursorSlot[0]] != ITEM_NONE) {
+                                moveCursorResult = 1;
                             }
                         } else {
-                            pauseCtx->unk_222[0] = spA2;
-                            pauseCtx->unk_22C[0] = pauseCtx->unk_22C[0] + 1;
+                            pauseCtx->cursorX[0] = oldCursorX;
+                            pauseCtx->cursorY[0] = pauseCtx->cursorY[0] + 1;
 
-                            if (pauseCtx->unk_22C[0] >= 4) {
-                                pauseCtx->unk_22C[0] = 0;
+                            if (pauseCtx->cursorY[0] >= 4) {
+                                pauseCtx->cursorY[0] = 0;
                             }
 
-                            pauseCtx->unk_218[0] = (pauseCtx->unk_22C[0] * 6) + pauseCtx->unk_222[0];
+                            pauseCtx->cursorSlot[0] = (pauseCtx->cursorY[0] * 6) + pauseCtx->cursorX[0];
 
-                            if (pauseCtx->unk_218[0] >= 24) {
-                                pauseCtx->unk_218[0] = pauseCtx->unk_222[0];
+                            if (pauseCtx->cursorSlot[0] >= 24) {
+                                pauseCtx->cursorSlot[0] = pauseCtx->cursorX[0];
                             }
 
-                            if (spA0 == pauseCtx->unk_22C[0]) {
-                                pauseCtx->unk_222[0] = spA2;
-                                pauseCtx->unk_218[0] = spA4;
+                            if (oldCursorY == pauseCtx->cursorY[0]) {
+                                pauseCtx->cursorX[0] = oldCursorX;
+                                pauseCtx->cursorSlot[0] = oldCursorSlot;
 
-                                func_8081F81C(globalCtx, 11);
+                                KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGERIGHT);
 
-                                phi_s2 = 2;
+                                moveCursorResult = 2;
                             }
                         }
                     }
                 }
 
-                if (phi_s2 == 1) {
-                    spAA = gSaveContext.inventory.items[pauseCtx->unk_218[0]];
+                if (moveCursorResult == 1) {
+                    cursorItem = gSaveContext.inventory.items[pauseCtx->cursorSlot[0]];
                 }
 
-                osSyncPrintf("【Ｘ cursor=%d(%) (cur_xpt=%d)(ok_fg=%d)(ccc=%d)(key_angle=%d)】  ", pauseCtx->unk_218[0],
-                             pauseCtx->unk_222[0], phi_s2, spAA, pauseCtx->unk_238);
+                osSyncPrintf("【Ｘ cursor=%d(%) (cur_xpt=%d)(ok_fg=%d)(ccc=%d)(key_angle=%d)】  ", pauseCtx->cursorSlot[0],
+                             pauseCtx->cursorX[0], moveCursorResult, cursorItem, pauseCtx->cursorSpecialPos);
             }
-        } else if (pauseCtx->unk_238 == 10) {
+        } else if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_SPECIAL_PAGELEFT) {
             if (pauseCtx->stickRelX > 30) {
                 pauseCtx->unk_25C = 0;
-                pauseCtx->unk_238 = 0;
+                pauseCtx->cursorSpecialPos = KSCP_CURSOR_NORMAL;
 
                 Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
 
-                spA4 = 0;
-                spA2 = 0;
-                spA0 = 0;
+                oldCursorSlot = 0;
+                oldCursorX = 0;
+                oldCursorY = 0;
                 while (true) {
-                    if (gSaveContext.inventory.items[spA4] != ITEM_NONE) {
-                        pauseCtx->unk_218[0] = spA4;
-                        pauseCtx->unk_222[0] = spA2;
-                        pauseCtx->unk_22C[0] = spA0;
-                        phi_s2 = 1;
+                    if (gSaveContext.inventory.items[oldCursorSlot] != ITEM_NONE) {
+                        pauseCtx->cursorSlot[0] = oldCursorSlot;
+                        pauseCtx->cursorX[0] = oldCursorX;
+                        pauseCtx->cursorY[0] = oldCursorY;
+                        moveCursorResult = 1;
                         break;
                     } else {
-                        spA0 = spA0 + 1;
-                        spA4 = spA4 + 6;
-                        if (spA0 < 4) {
+                        oldCursorY = oldCursorY + 1;
+                        oldCursorSlot = oldCursorSlot + 6;
+                        if (oldCursorY < 4) {
                             continue;
                         }
 
-                        spA0 = 0;
-                        spA4 = spA2 + 1;
-                        spA2 = spA4;
-                        if (spA2 < 6) {
+                        oldCursorY = 0;
+                        oldCursorSlot = oldCursorX + 1;
+                        oldCursorX = oldCursorSlot;
+                        if (oldCursorX < 6) {
                             continue;
                         }
 
-                        func_8081F81C(globalCtx, 11);
+                        KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGERIGHT);
                         break;
                     }
                 }
@@ -252,140 +264,140 @@ void func_80819E6C(GlobalContext* globalCtx) {
         } else {
             if (pauseCtx->stickRelX < -30) {
                 pauseCtx->unk_25C = 0;
-                pauseCtx->unk_238 = 0;
+                pauseCtx->cursorSpecialPos = KSCP_CURSOR_NORMAL;
 
                 Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
 
-                spA4 = 5;
-                spA2 = 5;
-                spA0 = 0;
+                oldCursorSlot = 5;
+                oldCursorX = 5;
+                oldCursorY = 0;
                 while (true) {
-                    if (gSaveContext.inventory.items[spA4] != ITEM_NONE) {
-                        pauseCtx->unk_218[0] = spA4;
-                        pauseCtx->unk_222[0] = spA2;
-                        pauseCtx->unk_22C[0] = spA0;
-                        phi_s2 = 1;
+                    if (gSaveContext.inventory.items[oldCursorSlot] != ITEM_NONE) {
+                        pauseCtx->cursorSlot[0] = oldCursorSlot;
+                        pauseCtx->cursorX[0] = oldCursorX;
+                        pauseCtx->cursorY[0] = oldCursorY;
+                        moveCursorResult = 1;
                         break;
                     } else {
-                        spA0 = spA0 + 1;
-                        spA4 = spA4 + 6;
-                        if (spA0 < 4) {
+                        oldCursorY = oldCursorY + 1;
+                        oldCursorSlot = oldCursorSlot + 6;
+                        if (oldCursorY < 4) {
                             continue;
                         }
 
-                        spA0 = 0;
-                        spA4 = spA2 - 1;
-                        spA2 = spA4;
-                        if (spA2 >= 0) {
+                        oldCursorY = 0;
+                        oldCursorSlot = oldCursorX - 1;
+                        oldCursorX = oldCursorSlot;
+                        if (oldCursorX >= 0) {
                             continue;
                         }
 
-                        func_8081F81C(globalCtx, 10);
+                        KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGELEFT);
                         break;
                     }
                 }
             }
         }
 
-        if (pauseCtx->unk_238 == 0) {
-            if (spAA != 999) {
+        if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
+            if (cursorItem != ITEM_CURSOR_INVALID) {
                 if (ABS(pauseCtx->stickRelY) > 30) {
-                    phi_s2 = 0;
-                    spA4 = pauseCtx->unk_218[0];
-                    spA0 = pauseCtx->unk_22C[0];
-                    while (phi_s2 == 0) {
+                    moveCursorResult = 0;
+                    oldCursorSlot = pauseCtx->cursorSlot[0];
+                    oldCursorY = pauseCtx->cursorY[0];
+                    while (moveCursorResult == 0) {
                         if (pauseCtx->stickRelY > 30) {
-                            if (pauseCtx->unk_22C[0] != 0) {
-                                pauseCtx->unk_22C[0] = pauseCtx->unk_22C[0] - 1;
-                                pauseCtx->unk_218[0] = pauseCtx->unk_218[0] - 6;
+                            if (pauseCtx->cursorY[0] != 0) {
+                                pauseCtx->cursorY[0] = pauseCtx->cursorY[0] - 1;
+                                pauseCtx->cursorSlot[0] = pauseCtx->cursorSlot[0] - 6;
 
-                                if (gSaveContext.inventory.items[pauseCtx->unk_218[0]] != ITEM_NONE) {
-                                    phi_s2 = 1;
+                                if (gSaveContext.inventory.items[pauseCtx->cursorSlot[0]] != ITEM_NONE) {
+                                    moveCursorResult = 1;
                                 }
                             } else {
-                                pauseCtx->unk_22C[0] = spA0;
-                                pauseCtx->unk_218[0] = spA4;
+                                pauseCtx->cursorY[0] = oldCursorY;
+                                pauseCtx->cursorSlot[0] = oldCursorSlot;
 
-                                phi_s2 = 2;
+                                moveCursorResult = 2;
                             }
                         } else if (pauseCtx->stickRelY < -30) {
-                            if (pauseCtx->unk_22C[0] < 3) {
-                                pauseCtx->unk_22C[0] = pauseCtx->unk_22C[0] + 1;
-                                pauseCtx->unk_218[0] = pauseCtx->unk_218[0] + 6;
+                            if (pauseCtx->cursorY[0] < 3) {
+                                pauseCtx->cursorY[0] = pauseCtx->cursorY[0] + 1;
+                                pauseCtx->cursorSlot[0] = pauseCtx->cursorSlot[0] + 6;
 
-                                if (gSaveContext.inventory.items[pauseCtx->unk_218[0]] != ITEM_NONE) {
-                                    phi_s2 = 1;
+                                if (gSaveContext.inventory.items[pauseCtx->cursorSlot[0]] != ITEM_NONE) {
+                                    moveCursorResult = 1;
                                 }
                             } else {
-                                pauseCtx->unk_22C[0] = spA0;
-                                pauseCtx->unk_218[0] = spA4;
+                                pauseCtx->cursorY[0] = oldCursorY;
+                                pauseCtx->cursorSlot[0] = oldCursorSlot;
 
-                                phi_s2 = 2;
+                                moveCursorResult = 2;
                             }
                         }
                     }
 
-                    osSyncPrintf("【Ｙ cursor=%d(%) (cur_ypt=%d)(ok_fg=%d)(ccc=%d)】  ", pauseCtx->unk_218[0],
-                                 pauseCtx->unk_22C[0], phi_s2, spAA);
+                    osSyncPrintf("【Ｙ cursor=%d(%) (cur_ypt=%d)(ok_fg=%d)(ccc=%d)】  ", pauseCtx->cursorSlot[0],
+                                 pauseCtx->cursorY[0], moveCursorResult, cursorItem);
                 }
             }
 
-            spA8 = pauseCtx->unk_218[0];
+            cursorSlot = pauseCtx->cursorSlot[0];
 
             pauseCtx->unk_260 = 4;
 
-            if (phi_s2 == 1) {
-                spAA = gSaveContext.inventory.items[pauseCtx->unk_218[0]];
-            } else if (phi_s2 != 2) {
-                spAA = gSaveContext.inventory.items[pauseCtx->unk_218[0]];
+            if (moveCursorResult == 1) {
+                cursorItem = gSaveContext.inventory.items[pauseCtx->cursorSlot[0]];
+            } else if (moveCursorResult != 2) {
+                cursorItem = gSaveContext.inventory.items[pauseCtx->cursorSlot[0]];
             }
 
-            pauseCtx->unk_23E[0] = spAA;
-            pauseCtx->unk_246[0] = spA8;
+            pauseCtx->cursorItem[0] = cursorItem;
+            pauseCtx->cursorSlotCopy[0] = cursorSlot;
 
-            if (!((D_8082ABFC[spA8] == 9) || (D_8082ABFC[spA8] == ((void)0, gSaveContext.linkAge)))) {
+            if (!((gSlotAgeReqs[cursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[cursorSlot] == ((void)0, gSaveContext.linkAge)))) {
                 pauseCtx->unk_25E = 1;
             }
 
-            if (spAA != 999) {
-                func_80819E14(pauseCtx, spA8 * 4, pauseCtx->vtx_158);
+            if (cursorItem != ITEM_CURSOR_INVALID) {
+                func_80819E14(pauseCtx, cursorSlot * 4, pauseCtx->vtx_158);
 
                 if ((pauseCtx->flag == 0) && (pauseCtx->state == 6) && (pauseCtx->unk_1E4 == 0)) {
                     if (CHECK_BTN_ANY(input->press.button, BTN_CLEFT | BTN_CDOWN | BTN_CRIGHT)) {
-                        if (((D_8082ABFC[spA8] == 9) || (D_8082ABFC[spA8] == gSaveContext.linkAge)) &&
-                            (spAA != ITEM_SOLD_OUT)) {
+                        if (((gSlotAgeReqs[cursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[cursorSlot] == gSaveContext.linkAge)) &&
+                            (cursorItem != ITEM_SOLD_OUT)) {
                             if (CHECK_BTN_ALL(input->press.button, BTN_CLEFT)) {
-                                pauseCtx->unk_252 = 0;
+                                pauseCtx->equipTargetCBtn = 0;
                             } else if (CHECK_BTN_ALL(input->press.button, BTN_CDOWN)) {
-                                pauseCtx->unk_252 = 1;
+                                pauseCtx->equipTargetCBtn = 1;
                             } else if (CHECK_BTN_ALL(input->press.button, BTN_CRIGHT)) {
-                                pauseCtx->unk_252 = 2;
+                                pauseCtx->equipTargetCBtn = 2;
                             }
 
-                            pauseCtx->unk_24E = spAA;
-                            pauseCtx->unk_250 = spA8;
+                            pauseCtx->equipTargetItem = cursorItem;
+                            pauseCtx->equipTargetSlot = cursorSlot;
                             pauseCtx->unk_1E4 = 3;
-                            pauseCtx->unk_254 = pauseCtx->vtx_158[spA8 * 4].v.ob[0] * 10;
-                            pauseCtx->unk_256 = pauseCtx->vtx_158[spA8 * 4].v.ob[1] * 10;
-                            pauseCtx->unk_258 = 255;
-                            D_8082A434 = 0;
-                            D_8082A430 = 3;
-                            D_8082A438 = 10;
-                            if ((pauseCtx->unk_24E == ITEM_ARROW_FIRE) || (pauseCtx->unk_24E == ITEM_ARROW_ICE) ||
-                                (pauseCtx->unk_24E == ITEM_ARROW_LIGHT)) {
+                            pauseCtx->equipAnimX = pauseCtx->vtx_158[cursorSlot * 4].v.ob[0] * 10;
+                            pauseCtx->equipAnimY = pauseCtx->vtx_158[cursorSlot * 4].v.ob[1] * 10;
+                            pauseCtx->equipAnimAlpha = 255;
+                            sEquipAnimTimer = 0;
+                            sEquipAnimState = 3;
+                            sEquipAnimNumFrames = 10;
+                            if ((pauseCtx->equipTargetItem == ITEM_ARROW_FIRE) || (pauseCtx->equipTargetItem == ITEM_ARROW_ICE) ||
+                                (pauseCtx->equipTargetItem == ITEM_ARROW_LIGHT)) {
                                 i = 0;
-                                if (pauseCtx->unk_24E == ITEM_ARROW_ICE) {
+                                if (pauseCtx->equipTargetItem == ITEM_ARROW_ICE) {
                                     i = 1;
                                 }
-                                if (pauseCtx->unk_24E == ITEM_ARROW_LIGHT) {
+                                if (pauseCtx->equipTargetItem == ITEM_ARROW_LIGHT) {
                                     i = 2;
                                 }
                                 Audio_PlaySoundGeneral(NA_SE_SY_SET_FIRE_ARROW + i, &D_801333D4, 4, &D_801333E0,
                                                        &D_801333E0, &D_801333E8);
-                                pauseCtx->unk_24E = 0xBF + i;
-                                D_8082A430 = 0;
-                                pauseCtx->unk_258 = 0;
-                                D_8082A438 = 6;
+                                pauseCtx->equipTargetItem = ITEM_MGARROW_EQUIP_FIRE + i;
+                                sEquipAnimState = 0;
+                                pauseCtx->equipAnimAlpha = 0;
+                                sEquipAnimNumFrames = 6;
                             } else {
                                 Audio_PlaySoundGeneral(NA_SE_SY_DECIDE, &D_801333D4, 4, &D_801333E0, &D_801333E0,
                                                        &D_801333E8);
@@ -404,14 +416,14 @@ void func_80819E6C(GlobalContext* globalCtx) {
                     pauseCtx->vtx_168[3].v.ob[1] = -200;
             }
         } else {
-            pauseCtx->unk_23E[0] = 999;
+            pauseCtx->cursorItem[0] = ITEM_CURSOR_INVALID;
         }
 
-        if (sp9E != pauseCtx->unk_218[0]) {
+        if (oldCursorSlot != pauseCtx->cursorSlot[0]) {
             Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
         }
     } else if ((pauseCtx->unk_1E4 == 3) && (pauseCtx->kscpPos == 0)) {
-        func_80819E14(pauseCtx, spA8 * 4, pauseCtx->vtx_158);
+        func_80819E14(pauseCtx, cursorSlot * 4, pauseCtx->vtx_158);
         pauseCtx->unk_260 = 4;
     }
 
@@ -420,9 +432,9 @@ void func_80819E6C(GlobalContext* globalCtx) {
     gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, pauseCtx->unk_208);
     gDPSetEnvColor(POLY_OPA_DISP++, 0, 0, 0, 0);
 
-    for (i = 0, spAC = 96; i < 3; i++, spAC += 4) {
+    for (i = 0, v = 96; i < 3; i++, v += 4) {
         if (gSaveContext.equips.buttonItems[i + 1] != ITEM_NONE) {
-            gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[spAC], 4, 0);
+            gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[v], 4, 0);
             POLY_OPA_DISP = func_8081F50C(POLY_OPA_DISP, &D_02000A00[1], 32, 32, 0);
         }
     }
@@ -430,50 +442,50 @@ void func_80819E6C(GlobalContext* globalCtx) {
     gDPPipeSync(POLY_OPA_DISP++);
     gDPSetCombineMode(POLY_OPA_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
 
-    for (i = 0, spAC = 0; i < 24; i++, spAC += 4) {
+    for (i = 0, v = 0; i < 24; i++, v += 4) {
         gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, 255, 255, 255, pauseCtx->unk_208);
 
         if (gSaveContext.inventory.items[i] != ITEM_NONE) {
-            if ((pauseCtx->unk_1E4 == 0) && (pauseCtx->kscpPos == 0) && (pauseCtx->unk_238 == 0)) {
-                if ((D_8082ABFC[i] == 9) || (D_8082ABFC[i] == gSaveContext.linkAge)) {
-                    if ((D_8082A430 == 2) && (i == 3)) {
-                        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, D_8082A460[pauseCtx->unk_24E - 0xBF],
-                                        D_8082A468[pauseCtx->unk_24E - 0xBF], D_8082A470[pauseCtx->unk_24E - 0xBF],
+            if ((pauseCtx->unk_1E4 == 0) && (pauseCtx->kscpPos == 0) && (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL)) {
+                if ((gSlotAgeReqs[i] == SLOT_AGE_EITHER) || (gSlotAgeReqs[i] == gSaveContext.linkAge)) {
+                    if ((sEquipAnimState == 2) && (i == 3)) {
+                        gDPSetPrimColor(POLY_OPA_DISP++, 0, 0, D_8082A460[pauseCtx->equipTargetItem - ITEM_MGARROW_EQUIP_FIRE],
+                                        D_8082A468[pauseCtx->equipTargetItem - ITEM_MGARROW_EQUIP_FIRE], D_8082A470[pauseCtx->equipTargetItem - ITEM_MGARROW_EQUIP_FIRE],
                                         pauseCtx->unk_208);
 
-                        pauseCtx->vtx_158[spAC + 0].v.ob[0] = pauseCtx->vtx_158[spAC + 2].v.ob[0] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[0] - 2;
+                        pauseCtx->vtx_158[v + 0].v.ob[0] = pauseCtx->vtx_158[v + 2].v.ob[0] =
+                            pauseCtx->vtx_158[v + 0].v.ob[0] - 2;
 
-                        pauseCtx->vtx_158[spAC + 1].v.ob[0] = pauseCtx->vtx_158[spAC + 3].v.ob[0] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[0] + 32;
+                        pauseCtx->vtx_158[v + 1].v.ob[0] = pauseCtx->vtx_158[v + 3].v.ob[0] =
+                            pauseCtx->vtx_158[v + 0].v.ob[0] + 32;
 
-                        pauseCtx->vtx_158[spAC + 0].v.ob[1] = pauseCtx->vtx_158[spAC + 1].v.ob[1] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[1] + 2;
+                        pauseCtx->vtx_158[v + 0].v.ob[1] = pauseCtx->vtx_158[v + 1].v.ob[1] =
+                            pauseCtx->vtx_158[v + 0].v.ob[1] + 2;
 
-                        pauseCtx->vtx_158[spAC + 2].v.ob[1] = pauseCtx->vtx_158[spAC + 3].v.ob[1] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[1] - 32;
-                    } else if (spA8 == i) {
-                        pauseCtx->vtx_158[spAC + 0].v.ob[0] = pauseCtx->vtx_158[spAC + 2].v.ob[0] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[0] - 2;
+                        pauseCtx->vtx_158[v + 2].v.ob[1] = pauseCtx->vtx_158[v + 3].v.ob[1] =
+                            pauseCtx->vtx_158[v + 0].v.ob[1] - 32;
+                    } else if (cursorSlot == i) {
+                        pauseCtx->vtx_158[v + 0].v.ob[0] = pauseCtx->vtx_158[v + 2].v.ob[0] =
+                            pauseCtx->vtx_158[v + 0].v.ob[0] - 2;
 
-                        pauseCtx->vtx_158[spAC + 1].v.ob[0] = pauseCtx->vtx_158[spAC + 3].v.ob[0] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[0] + 32;
+                        pauseCtx->vtx_158[v + 1].v.ob[0] = pauseCtx->vtx_158[v + 3].v.ob[0] =
+                            pauseCtx->vtx_158[v + 0].v.ob[0] + 32;
 
-                        pauseCtx->vtx_158[spAC + 0].v.ob[1] = pauseCtx->vtx_158[spAC + 1].v.ob[1] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[1] + 2;
+                        pauseCtx->vtx_158[v + 0].v.ob[1] = pauseCtx->vtx_158[v + 1].v.ob[1] =
+                            pauseCtx->vtx_158[v + 0].v.ob[1] + 2;
 
-                        pauseCtx->vtx_158[spAC + 2].v.ob[1] = pauseCtx->vtx_158[spAC + 3].v.ob[1] =
-                            pauseCtx->vtx_158[spAC + 0].v.ob[1] - 32;
+                        pauseCtx->vtx_158[v + 2].v.ob[1] = pauseCtx->vtx_158[v + 3].v.ob[1] =
+                            pauseCtx->vtx_158[v + 0].v.ob[1] - 32;
                     }
                 }
             }
 
-            gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[spAC], 4, 0);
+            gSPVertex(POLY_OPA_DISP++, &pauseCtx->vtx_158[v], 4, 0);
             func_8081F87C(globalCtx->state.gfxCtx, gItemIcons[gSaveContext.inventory.items[i]], 32, 32, 0);
         }
     }
 
-    if (pauseCtx->unk_238 == 0) {
+    if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
         func_8081FE30(globalCtx, 0);
     }
 
@@ -482,8 +494,8 @@ void func_80819E6C(GlobalContext* globalCtx) {
                       ENVIRONMENT, TEXEL0, ENVIRONMENT, TEXEL0, 0, PRIMITIVE, 0);
 
     for (i = 0; i < 15; i++) {
-        if ((D_8082A420[i] != SLOT_NONE) && (gSaveContext.inventory.items[i] != ITEM_NONE)) {
-            func_808198A0(pauseCtx, globalCtx->state.gfxCtx, gSaveContext.inventory.items[i]);
+        if ((sSlotAmmoMap[i] != SLOT_NONE) && (gSaveContext.inventory.items[i] != ITEM_NONE)) {
+            KaleidoScope_DrawInventoryAmmo(pauseCtx, globalCtx->state.gfxCtx, gSaveContext.inventory.items[i]);
         }
     }
 
@@ -504,314 +516,290 @@ void func_8081AD44(GlobalContext* globalCtx) {
     u16 phi_a2;
     u16 phi_a1;
 
-    if (D_8082A430 == 0) {
-        pauseCtx->unk_258 += 0xE;
-        if (pauseCtx->unk_258 > 0xFF) {
-            pauseCtx->unk_258 = 0xFE;
-            D_8082A430++;
+    if (sEquipAnimState == 0) {
+        pauseCtx->equipAnimAlpha += 0xE;
+        if (pauseCtx->equipAnimAlpha > 0xFF) {
+            pauseCtx->equipAnimAlpha = 0xFE;
+            sEquipAnimState++;
         }
-        D_8082A434 = 5;
+        sEquipAnimTimer = 5;
         return;
     }
 
-    if (D_8082A430 == 2) {
+    if (sEquipAnimState == 2) {
         D_8082A488--;
 
         if (D_8082A488 == 0) {
-            pauseCtx->unk_24E -= 0x87;
-            pauseCtx->unk_250 = 3;
-            D_8082A438 = 6;
+            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+            pauseCtx->equipTargetSlot = SLOT_BOW;
+            sEquipAnimNumFrames = 6;
             WREG(90) = 320;
             WREG(87) = WREG(91);
-            D_8082A430++;
+            sEquipAnimState++;
             Audio_PlaySoundGeneral(NA_SE_SY_SYNTH_MAGIC_ARROW, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
         }
         return;
     }
 
-    if (D_8082A430 == 1) {
+    if (sEquipAnimState == 1) {
         vtx = &pauseCtx->vtx_158[12];
-        phi_a2 = ABS(pauseCtx->unk_254 - vtx->v.ob[0] * 10) / D_8082A438;
-        phi_a1 = ABS(pauseCtx->unk_256 - vtx->v.ob[1] * 10) / D_8082A438;
+        phi_a2 = ABS(pauseCtx->equipAnimX - vtx->v.ob[0] * 10) / sEquipAnimNumFrames;
+        phi_a1 = ABS(pauseCtx->equipAnimY - vtx->v.ob[1] * 10) / sEquipAnimNumFrames;
     } else {
-        phi_a2 = ABS(pauseCtx->unk_254 - D_8082A478[pauseCtx->unk_252]) / D_8082A438;
-        phi_a1 = ABS(pauseCtx->unk_256 - D_8082A480[pauseCtx->unk_252]) / D_8082A438;
+        phi_a2 = ABS(pauseCtx->equipAnimX - D_8082A478[pauseCtx->equipTargetCBtn]) / sEquipAnimNumFrames;
+        phi_a1 = ABS(pauseCtx->equipAnimY - D_8082A480[pauseCtx->equipTargetCBtn]) / sEquipAnimNumFrames;
     }
 
-    if (pauseCtx->unk_24E >= 0xBF) {
-        if (pauseCtx->unk_258 < 0xFE) {
-            pauseCtx->unk_258 += 0xE;
-            if (pauseCtx->unk_258 >= 0x100) {
-                pauseCtx->unk_258 = 0xFE;
+    if (pauseCtx->equipTargetItem >= ITEM_MGARROW_EQUIP_FIRE) {
+        if (pauseCtx->equipAnimAlpha < 0xFE) {
+            pauseCtx->equipAnimAlpha += 0xE;
+            if (pauseCtx->equipAnimAlpha >= 0x100) {
+                pauseCtx->equipAnimAlpha = 0xFE;
             }
-            D_8082A434 = 5;
+            sEquipAnimTimer = 5;
             return;
         }
     }
 
-    if (D_8082A434 == 0) {
-        WREG(90) -= WREG(87) / D_8082A438;
-        WREG(87) -= WREG(87) / D_8082A438;
+    if (sEquipAnimTimer == 0) {
+        WREG(90) -= WREG(87) / sEquipAnimNumFrames;
+        WREG(87) -= WREG(87) / sEquipAnimNumFrames;
 
-        if (D_8082A430 == 1) {
-            if (pauseCtx->unk_254 >= (pauseCtx->vtx_158[12].v.ob[0] * 10)) {
-                pauseCtx->unk_254 -= phi_a2;
+        if (sEquipAnimState == 1) {
+            if (pauseCtx->equipAnimX >= (pauseCtx->vtx_158[12].v.ob[0] * 10)) {
+                pauseCtx->equipAnimX -= phi_a2;
             } else {
-                pauseCtx->unk_254 += phi_a2;
+                pauseCtx->equipAnimX += phi_a2;
             }
 
-            if (pauseCtx->unk_256 >= (pauseCtx->vtx_158[12].v.ob[1] * 10)) {
-                pauseCtx->unk_256 -= phi_a1;
+            if (pauseCtx->equipAnimY >= (pauseCtx->vtx_158[12].v.ob[1] * 10)) {
+                pauseCtx->equipAnimY -= phi_a1;
             } else {
-                pauseCtx->unk_256 += phi_a1;
+                pauseCtx->equipAnimY += phi_a1;
             }
         } else {
-            if (pauseCtx->unk_254 >= D_8082A478[pauseCtx->unk_252]) {
-                pauseCtx->unk_254 -= phi_a2;
+            if (pauseCtx->equipAnimX >= D_8082A478[pauseCtx->equipTargetCBtn]) {
+                pauseCtx->equipAnimX -= phi_a2;
             } else {
-                pauseCtx->unk_254 += phi_a2;
+                pauseCtx->equipAnimX += phi_a2;
             }
 
-            if (pauseCtx->unk_256 >= D_8082A480[pauseCtx->unk_252]) {
-                pauseCtx->unk_256 -= phi_a1;
+            if (pauseCtx->equipAnimY >= D_8082A480[pauseCtx->equipTargetCBtn]) {
+                pauseCtx->equipAnimY -= phi_a1;
             } else {
-                pauseCtx->unk_256 += phi_a1;
+                pauseCtx->equipAnimY += phi_a1;
             }
         }
 
-        D_8082A438--;
+        sEquipAnimNumFrames--;
 
-        if (D_8082A438 == 0) {
-            if (D_8082A430 == 1) {
-                D_8082A430++;
+        if (sEquipAnimNumFrames == 0) {
+            if (sEquipAnimState == 1) {
+                sEquipAnimState++;
                 D_8082A488 = 4;
                 return;
             }
 
             osSyncPrintf("\n＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n");
 
-            if (pauseCtx->unk_252 == 0) {
+            if (pauseCtx->equipTargetCBtn == 0) {
 
-                if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[1]) {
-                    if (gSaveContext.equips.buttonItems[1] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[1] == 3) ||
-                             ((gSaveContext.equips.buttonItems[1] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[1] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[1]) {
+                    if (gSaveContext.equips.buttonItems[1] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(1)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[2] = gSaveContext.equips.buttonItems[1];
                             gSaveContext.equips.cButtonSlots[1] = gSaveContext.equips.cButtonSlots[0];
                             Interface_LoadItemIcon2(globalCtx, 2);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[2] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[1] = 0xFF;
+                        gSaveContext.equips.buttonItems[2] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[1] = SLOT_NONE;
                     }
-                } else if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[2]) {
-                    if (gSaveContext.equips.buttonItems[1] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[1] == 3) ||
-                             ((gSaveContext.equips.buttonItems[1] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[1] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                } else if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[2]) {
+                    if (gSaveContext.equips.buttonItems[1] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(1)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[3] = gSaveContext.equips.buttonItems[1];
                             gSaveContext.equips.cButtonSlots[2] = gSaveContext.equips.cButtonSlots[0];
                             Interface_LoadItemIcon2(globalCtx, 3);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[3] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[2] = 0xFF;
+                        gSaveContext.equips.buttonItems[3] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[2] = SLOT_NONE;
                     }
                 }
 
-                if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2)) {
-                    if ((gSaveContext.equips.buttonItems[1] == 3) ||
-                        ((gSaveContext.equips.buttonItems[1] >= 0x38) && (gSaveContext.equips.buttonItems[1] < 0x3B))) {
-                        pauseCtx->unk_24E -= 0x87;
-                        pauseCtx->unk_250 = 3;
+                if (TARGET_ITEM_IS_MAGIC_ARROW) {
+                    if (BUTTON_ITEM_IS_BOW_OR_MAGICARROW(1)) {
+                        pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                        pauseCtx->equipTargetSlot = SLOT_BOW;
                     }
-                } else if (pauseCtx->unk_24E == 3) {
-                    if ((gSaveContext.equips.buttonItems[2] >= 0x38) && (gSaveContext.equips.buttonItems[2] < 0x3B)) {
+                } else if (pauseCtx->equipTargetItem == ITEM_BOW) {
+                    if (BUTTON_ITEM_IS_MAGICARROW(2)) {
                         gSaveContext.equips.buttonItems[2] = gSaveContext.equips.buttonItems[1];
                         gSaveContext.equips.cButtonSlots[1] = gSaveContext.equips.cButtonSlots[0];
                         Interface_LoadItemIcon2(globalCtx, 2);
-                    } else if ((gSaveContext.equips.buttonItems[3] >= 0x38) &&
-                               (gSaveContext.equips.buttonItems[3] < 0x3B)) {
+                    } else if (BUTTON_ITEM_IS_MAGICARROW(3)) {
                         gSaveContext.equips.buttonItems[3] = gSaveContext.equips.buttonItems[1];
                         gSaveContext.equips.cButtonSlots[2] = gSaveContext.equips.cButtonSlots[0];
                         Interface_LoadItemIcon2(globalCtx, 3);
                     }
                 }
 
-                gSaveContext.equips.buttonItems[1] = pauseCtx->unk_24E;
-                gSaveContext.equips.cButtonSlots[0] = pauseCtx->unk_250;
+                gSaveContext.equips.buttonItems[1] = pauseCtx->equipTargetItem;
+                gSaveContext.equips.cButtonSlots[0] = pauseCtx->equipTargetSlot;
                 Interface_LoadItemIcon1(globalCtx, 1);
 
-                osSyncPrintf("Ｃ左sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_24E,
+                osSyncPrintf("Ｃ左sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetItem,
                              gSaveContext.equips.buttonItems[1], gSaveContext.equips.buttonItems[2],
                              gSaveContext.equips.buttonItems[3]);
-                osSyncPrintf("Ｃ左sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_250,
+                osSyncPrintf("Ｃ左sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetSlot,
                              gSaveContext.equips.cButtonSlots[0], gSaveContext.equips.cButtonSlots[1],
                              gSaveContext.equips.cButtonSlots[2]);
-            } else if (pauseCtx->unk_252 == 1) {
-                osSyncPrintf("Ｃ下sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_24E,
+            } else if (pauseCtx->equipTargetCBtn == 1) {
+                osSyncPrintf("Ｃ下sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetItem,
                              gSaveContext.equips.buttonItems[1], gSaveContext.equips.buttonItems[2],
                              gSaveContext.equips.buttonItems[3]);
-                osSyncPrintf("Ｃ下sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_250,
+                osSyncPrintf("Ｃ下sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetSlot,
                              gSaveContext.equips.cButtonSlots[0], gSaveContext.equips.cButtonSlots[1],
                              gSaveContext.equips.cButtonSlots[2]);
 
-                if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[0]) {
-                    if (gSaveContext.equips.buttonItems[2] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[2] == 3) ||
-                             ((gSaveContext.equips.buttonItems[2] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[2] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[0]) {
+                    if (gSaveContext.equips.buttonItems[2] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(2)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[1] = gSaveContext.equips.buttonItems[2];
                             gSaveContext.equips.cButtonSlots[0] = gSaveContext.equips.cButtonSlots[1];
                             Interface_LoadItemIcon2(globalCtx, 1);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[1] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[0] = 0xFF;
+                        gSaveContext.equips.buttonItems[1] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[0] = SLOT_NONE;
                     }
-                } else if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[2]) {
-                    if (gSaveContext.equips.buttonItems[2] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[2] == 3) ||
-                             ((gSaveContext.equips.buttonItems[2] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[2] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                } else if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[2]) {
+                    if (gSaveContext.equips.buttonItems[2] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(2)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[3] = gSaveContext.equips.buttonItems[2];
                             gSaveContext.equips.cButtonSlots[2] = gSaveContext.equips.cButtonSlots[1];
                             Interface_LoadItemIcon2(globalCtx, 3);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[3] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[2] = 0xFF;
+                        gSaveContext.equips.buttonItems[3] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[2] = SLOT_NONE;
                     }
                 }
 
-                if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2)) {
-                    if ((gSaveContext.equips.buttonItems[2] == 3) ||
-                        ((gSaveContext.equips.buttonItems[2] >= 0x38) && (gSaveContext.equips.buttonItems[2] < 0x3B))) {
-                        pauseCtx->unk_24E -= 0x87;
-                        pauseCtx->unk_250 = 3;
+                if (TARGET_ITEM_IS_MAGIC_ARROW) {
+                    if (BUTTON_ITEM_IS_BOW_OR_MAGICARROW(2)) {
+                        pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                        pauseCtx->equipTargetSlot = SLOT_BOW;
                     }
-                } else if (pauseCtx->unk_24E == 3) {
-                    if ((gSaveContext.equips.buttonItems[1] >= 0x38) && (gSaveContext.equips.buttonItems[1] < 0x3B)) {
+                } else if (pauseCtx->equipTargetItem == 3) {
+                    if (BUTTON_ITEM_IS_MAGICARROW(1)) {
                         gSaveContext.equips.buttonItems[1] = gSaveContext.equips.buttonItems[2];
                         Interface_LoadItemIcon2(globalCtx, 1);
-                    } else if ((gSaveContext.equips.buttonItems[3] >= 0x38) &&
-                               (gSaveContext.equips.buttonItems[3] < 0x3B)) {
+                    } else if (BUTTON_ITEM_IS_MAGICARROW(3)) {
                         gSaveContext.equips.buttonItems[3] = gSaveContext.equips.buttonItems[2];
                         Interface_LoadItemIcon2(globalCtx, 3);
                     }
                 }
 
-                gSaveContext.equips.buttonItems[2] = pauseCtx->unk_24E;
-                gSaveContext.equips.cButtonSlots[1] = pauseCtx->unk_250;
+                gSaveContext.equips.buttonItems[2] = pauseCtx->equipTargetItem;
+                gSaveContext.equips.cButtonSlots[1] = pauseCtx->equipTargetSlot;
                 Interface_LoadItemIcon1(globalCtx, 2);
 
-                osSyncPrintf("Ｃ下sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_24E,
+                osSyncPrintf("Ｃ下sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetItem,
                              gSaveContext.equips.buttonItems[1], gSaveContext.equips.buttonItems[2],
                              gSaveContext.equips.buttonItems[3]);
-                osSyncPrintf("Ｃ下sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_250,
+                osSyncPrintf("Ｃ下sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetSlot,
                              gSaveContext.equips.cButtonSlots[0], gSaveContext.equips.cButtonSlots[1],
                              gSaveContext.equips.cButtonSlots[2]);
             } else {
-                osSyncPrintf("Ｃ右sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_24E,
+                osSyncPrintf("Ｃ右sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetItem,
                              gSaveContext.equips.buttonItems[1], gSaveContext.equips.buttonItems[2],
                              gSaveContext.equips.buttonItems[3]);
-                osSyncPrintf("Ｃ右sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_250,
+                osSyncPrintf("Ｃ右sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetSlot,
                              gSaveContext.equips.cButtonSlots[0], gSaveContext.equips.cButtonSlots[1],
                              gSaveContext.equips.cButtonSlots[2]);
 
-                if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[0]) {
-                    if (gSaveContext.equips.buttonItems[3] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[3] == 3) ||
-                             ((gSaveContext.equips.buttonItems[3] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[3] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[0]) {
+                    if (gSaveContext.equips.buttonItems[3] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(3)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[1] = gSaveContext.equips.buttonItems[3];
                             gSaveContext.equips.cButtonSlots[0] = gSaveContext.equips.cButtonSlots[2];
                             Interface_LoadItemIcon2(globalCtx, 1);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[1] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[0] = 0xFF;
+                        gSaveContext.equips.buttonItems[1] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[0] = SLOT_NONE;
                     }
-                } else if (pauseCtx->unk_250 == gSaveContext.equips.cButtonSlots[1]) {
-                    if (gSaveContext.equips.buttonItems[3] != 0xFF) {
-                        if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2) &&
-                            ((gSaveContext.equips.buttonItems[3] == 3) ||
-                             ((gSaveContext.equips.buttonItems[3] >= 0x38) &&
-                              (gSaveContext.equips.buttonItems[3] < 0x3B)))) {
-                            pauseCtx->unk_24E -= 0x87;
-                            pauseCtx->unk_250 = 3;
+                } else if (pauseCtx->equipTargetSlot == gSaveContext.equips.cButtonSlots[1]) {
+                    if (gSaveContext.equips.buttonItems[3] != ITEM_NONE) {
+                        if (TARGET_ITEM_IS_MAGIC_ARROW && BUTTON_ITEM_IS_BOW_OR_MAGICARROW(3)) {
+                            pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                            pauseCtx->equipTargetSlot = SLOT_BOW;
                         } else {
                             gSaveContext.equips.buttonItems[2] = gSaveContext.equips.buttonItems[3];
                             gSaveContext.equips.cButtonSlots[1] = gSaveContext.equips.cButtonSlots[2];
                             Interface_LoadItemIcon2(globalCtx, 2);
                         }
                     } else {
-                        gSaveContext.equips.buttonItems[2] = 0xFF;
-                        gSaveContext.equips.cButtonSlots[1] = 0xFF;
+                        gSaveContext.equips.buttonItems[2] = ITEM_NONE;
+                        gSaveContext.equips.cButtonSlots[1] = SLOT_NONE;
                     }
                 }
 
-                if ((pauseCtx->unk_24E >= 0xBF) && (pauseCtx->unk_24E < 0xC2)) {
-                    if ((gSaveContext.equips.buttonItems[3] == 3) ||
-                        ((gSaveContext.equips.buttonItems[3] >= 0x38) && (gSaveContext.equips.buttonItems[3] < 0x3B))) {
-                        pauseCtx->unk_24E -= 0x87;
-                        pauseCtx->unk_250 = 3;
+                if (TARGET_ITEM_IS_MAGIC_ARROW) {
+                    if (BUTTON_ITEM_IS_BOW_OR_MAGICARROW(3)) {
+                        pauseCtx->equipTargetItem -= ITEM_MGARROW_EQUIP_OFFSET;
+                        pauseCtx->equipTargetSlot = SLOT_BOW;
                     }
-                } else if (pauseCtx->unk_24E == 3) {
-                    if ((gSaveContext.equips.buttonItems[1] >= 0x38) && (gSaveContext.equips.buttonItems[1] < 0x3B)) {
+                } else if (pauseCtx->equipTargetItem == ITEM_BOW) {
+                    if (BUTTON_ITEM_IS_MAGICARROW(1)) {
                         gSaveContext.equips.buttonItems[1] = gSaveContext.equips.buttonItems[3];
                         Interface_LoadItemIcon2(globalCtx, 1);
-                    } else if ((gSaveContext.equips.buttonItems[2] >= 0x38) &&
-                               (gSaveContext.equips.buttonItems[2] < 0x3B)) {
+                    } else if (BUTTON_ITEM_IS_MAGICARROW(2)) {
                         gSaveContext.equips.buttonItems[2] = gSaveContext.equips.buttonItems[3];
                         Interface_LoadItemIcon2(globalCtx, 2);
                     }
                 }
 
-                gSaveContext.equips.buttonItems[3] = pauseCtx->unk_24E;
-                gSaveContext.equips.cButtonSlots[2] = pauseCtx->unk_250;
+                gSaveContext.equips.buttonItems[3] = pauseCtx->equipTargetItem;
+                gSaveContext.equips.cButtonSlots[2] = pauseCtx->equipTargetSlot;
                 Interface_LoadItemIcon1(globalCtx, 3);
 
-                osSyncPrintf("Ｃ右sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_24E,
+                osSyncPrintf("Ｃ右sl_item_no=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetItem,
                              gSaveContext.equips.buttonItems[1], gSaveContext.equips.buttonItems[2],
                              gSaveContext.equips.buttonItems[3]);
-                osSyncPrintf("Ｃ右sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->unk_250,
+                osSyncPrintf("Ｃ右sl_number=%d (1)=%d (2)=%d (3)=%d\n", pauseCtx->equipTargetSlot,
                              gSaveContext.equips.cButtonSlots[0], gSaveContext.equips.cButtonSlots[1],
                              gSaveContext.equips.cButtonSlots[2]);
             }
 
             pauseCtx->unk_1E4 = 0;
-            D_8082A438 = 10;
+            sEquipAnimNumFrames = 10;
             WREG(90) = 320;
             WREG(87) = WREG(91);
         }
         return;
     }
 
-    D_8082A434--;
+    sEquipAnimTimer--;
 
-    if (D_8082A434 == 0) {
-        pauseCtx->unk_258 = 0xFF;
+    if (sEquipAnimTimer == 0) {
+        pauseCtx->equipAnimAlpha = 0xFF;
     }
 }

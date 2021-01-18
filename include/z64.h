@@ -473,21 +473,21 @@ typedef struct {
     /* 0x020A */ char   unk_20A[0x0A];
     /* 0x0214 */ s16    stickRelX;
     /* 0x0216 */ s16    stickRelY;
-    /* 0x0218 */ s16    unk_218[5];
-    /* 0x0222 */ s16    unk_222[5];
-    /* 0x022C */ s16    unk_22C[5];
+    /* 0x0218 */ s16    cursorSlot[5]; //"cursor"
+    /* 0x0222 */ s16    cursorX[5]; //"cur_xpt"
+    /* 0x022C */ s16    cursorY[5]; //"cur_ypt"
     /* 0x0236 */ s16    unk_236;
-    /* 0x0238 */ s16    unk_238;
+    /* 0x0238 */ s16    cursorSpecialPos; //"key_angle"
     /* 0x023A */ s16    unk_23A;
     /* 0x023C */ u16    unk_23C;
-    /* 0x023E */ u16    unk_23E[4];
-    /* 0x0246 */ u16    unk_246[4];
-    /* 0x024E */ u16    unk_24E;
-    /* 0x0250 */ u16    unk_250;
-    /* 0x0252 */ u16    unk_252;
-    /* 0x0254 */ s16    unk_254;
-    /* 0x0256 */ s16    unk_256;
-    /* 0x0258 */ s16    unk_258;
+    /* 0x023E */ u16    cursorItem[4];
+    /* 0x0246 */ u16    cursorSlotCopy[4];
+    /* 0x024E */ u16    equipTargetItem;
+    /* 0x0250 */ u16    equipTargetSlot;
+    /* 0x0252 */ u16    equipTargetCBtn;
+    /* 0x0254 */ s16    equipAnimX;
+    /* 0x0256 */ s16    equipAnimY;
+    /* 0x0258 */ s16    equipAnimAlpha;
     /* 0x025A */ s16    unk_25A;
     /* 0x025C */ u16    unk_25C;
     /* 0x025E */ u16    unk_25E;
@@ -812,7 +812,7 @@ typedef struct {
 } TitleContext; // size = 0x1E8
 
 struct SelectContext;
-
+TODO ERROR;
 typedef struct {
     /* 0x00 */ char* name;
     /* 0x04 */ void (*loadFunc)(struct SelectContext*, s32);

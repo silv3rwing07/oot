@@ -3286,29 +3286,29 @@ void Interface_Draw(GlobalContext* globalCtx) {
             gDPSetCombineMode(OVERLAY_DISP++, G_CC_MODULATEIA_PRIM, G_CC_MODULATEIA_PRIM);
             gSPMatrix(OVERLAY_DISP++, &gMtxClear, G_MTX_MODELVIEW | G_MTX_LOAD);
 
-            pauseCtx->vtx_168[16].v.ob[0] = pauseCtx->vtx_168[18].v.ob[0] = pauseCtx->unk_254 / 10;
+            pauseCtx->vtx_168[16].v.ob[0] = pauseCtx->vtx_168[18].v.ob[0] = pauseCtx->equipAnimX / 10;
             pauseCtx->vtx_168[17].v.ob[0] = pauseCtx->vtx_168[19].v.ob[0] =
                 pauseCtx->vtx_168[16].v.ob[0] + WREG(90) / 10;
-            pauseCtx->vtx_168[16].v.ob[1] = pauseCtx->vtx_168[17].v.ob[1] = pauseCtx->unk_256 / 10;
+            pauseCtx->vtx_168[16].v.ob[1] = pauseCtx->vtx_168[17].v.ob[1] = pauseCtx->equipAnimY / 10;
             pauseCtx->vtx_168[18].v.ob[1] = pauseCtx->vtx_168[19].v.ob[1] =
                 pauseCtx->vtx_168[16].v.ob[1] - WREG(90) / 10;
 
-            if (pauseCtx->unk_24E < 0xBF) {
+            if (pauseCtx->equipTargetItem < ITEM_MGARROW_EQUIP_FIRE) {
                 // Normal Equip (icon goes from the inventory slot to the C button when equipping it)
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, pauseCtx->unk_258);
+                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, pauseCtx->equipMagicArrowAnimCounter);
                 gSPVertex(OVERLAY_DISP++, &pauseCtx->vtx_168[16], 4, 0);
 
-                gDPLoadTextureBlock(OVERLAY_DISP++, gItemIcons[pauseCtx->unk_24E], G_IM_FMT_RGBA, G_IM_SIZ_32b, 32, 32,
+                gDPLoadTextureBlock(OVERLAY_DISP++, gItemIcons[pauseCtx->equipTargetItem], G_IM_FMT_RGBA, G_IM_SIZ_32b, 32, 32,
                                     0, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMASK, G_TX_NOMASK,
                                     G_TX_NOLOD, G_TX_NOLOD);
             } else {
                 // Magic Arrow Equip Effect
-                phi_s3_2 = pauseCtx->unk_24E - 0xBF;
+                phi_s3_2 = pauseCtx->equipTargetItem - ITEM_MGARROW_EQUIP_FIRE;
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, sMagicArrowEffectsR[phi_s3_2], sMagicArrowEffectsG[phi_s3_2],
-                                sMagicArrowEffectsB[phi_s3_2], pauseCtx->unk_258);
+                                sMagicArrowEffectsB[phi_s3_2], pauseCtx->equipMagicArrowAnimCounter);
 
-                if ((pauseCtx->unk_258 > 0) && (pauseCtx->unk_258 < 255)) {
-                    phi_s3_2 = (pauseCtx->unk_258 / 8) / 2;
+                if ((pauseCtx->equipMagicArrowAnimCounter > 0) && (pauseCtx->equipMagicArrowAnimCounter < 255)) {
+                    phi_s3_2 = (pauseCtx->equipMagicArrowAnimCounter / 8) / 2;
                     pauseCtx->vtx_168[16].v.ob[0] = pauseCtx->vtx_168[18].v.ob[0] =
                         pauseCtx->vtx_168[16].v.ob[0] - phi_s3_2;
                     pauseCtx->vtx_168[17].v.ob[0] = pauseCtx->vtx_168[19].v.ob[0] =
