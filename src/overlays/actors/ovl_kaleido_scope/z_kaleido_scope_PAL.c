@@ -339,7 +339,7 @@ void func_8081FABC(GlobalContext* globalCtx) {
 
     switch (pauseCtx->kscpPos) {
         case 0:
-            s = pauseCtx->unk_246[0];
+            s = pauseCtx->cursorSlotCopy[0];
             if (gSaveContext.inventory.items[s] == ITEM_NONE) {
                 i = s + 1;
                 while (true) {
@@ -351,12 +351,12 @@ void func_8081FABC(GlobalContext* globalCtx) {
                         i = 0;
                     }
                     if (i == s) {
-                        pauseCtx->unk_23E[0] = pauseCtx->unk_23C = 999;
+                        pauseCtx->cursorItem[0] = pauseCtx->unk_23C = 999;
                         return;
                     }
                 }
-                pauseCtx->unk_23E[0] = gSaveContext.inventory.items[i];
-                pauseCtx->unk_246[0] = i;
+                pauseCtx->cursorItem[0] = gSaveContext.inventory.items[i];
+                pauseCtx->cursorSlotCopy[0] = i;
             }
             break;
         case 1:
@@ -1099,10 +1099,10 @@ void func_80823548(GlobalContext* globalCtx) {
     PauseContext* pauseCtx = &globalCtx->pauseCtx;
     u16 sp2A;
 
-    if ((pauseCtx->unk_23C != pauseCtx->unk_23E[pauseCtx->kscpPos]) ||
+    if ((pauseCtx->unk_23C != pauseCtx->cursorItem[pauseCtx->kscpPos]) ||
         ((pauseCtx->kscpPos == 1) && (pauseCtx->cursorSpecialPos != KSCP_CURSOR_NORMAL))) {
 
-        pauseCtx->unk_23C = pauseCtx->unk_23E[pauseCtx->kscpPos];
+        pauseCtx->unk_23C = pauseCtx->cursorItem[pauseCtx->kscpPos];
         sp2A = pauseCtx->unk_23C;
 
         osCreateMesgQueue(&pauseCtx->loadQueue, &pauseCtx->loadMsg, 1);
@@ -1137,9 +1137,9 @@ void func_80823548(GlobalContext* globalCtx) {
             pauseCtx->unk_25C = 0;
         }
     } else if (pauseCtx->unk_25E == 0) {
-        if (((pauseCtx->kscpPos == 2) && (pauseCtx->unk_246[2] >= 6) && (pauseCtx->unk_246[2] <= 0x11) &&
+        if (((pauseCtx->kscpPos == 2) && (pauseCtx->cursorSlotCopy[2] >= 6) && (pauseCtx->cursorSlotCopy[2] <= 0x11) &&
              (pauseCtx->unk_1E4 == 8)) ||
-            (pauseCtx->kscpPos == 0) || ((pauseCtx->kscpPos == 3) && (pauseCtx->unk_222[3] != 0))) {
+            (pauseCtx->kscpPos == 0) || ((pauseCtx->kscpPos == 3) && (pauseCtx->cursorX[3] != 0))) {
             if (pauseCtx->unk_23C != 44) {
                 pauseCtx->unk_25C++;
                 if (pauseCtx->unk_25C > WREG(88)) {
@@ -1360,7 +1360,7 @@ void func_808267AC(GlobalContext* globalCtx) {
                 temp2 = 6;
                 temp3 = 4;
                 temp4 = 4;
-            } else if (pauseCtx->unk_246[pauseCtx->kscpPos] >= 3) {
+            } else if (pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] >= 3) {
                 temp1 = -6;
                 temp2 = 5;
                 temp4 = 7;
@@ -1376,22 +1376,22 @@ void func_808267AC(GlobalContext* globalCtx) {
             temp2 = 4;
             temp3 = 12;
             temp4 = 12;
-            if (pauseCtx->unk_246[pauseCtx->kscpPos] == 0x18) {
+            if (pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] == 0x18) {
                 temp1 = -2;
                 temp2 = 2;
                 temp3 = 32;
                 temp4 = 32;
-            } else if (pauseCtx->unk_246[pauseCtx->kscpPos] == 0x17) {
+            } else if (pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] == 0x17) {
                 temp1 = -4;
                 temp2 = 4;
                 temp4 = 13;
                 temp3 = 34;
-            } else if (pauseCtx->unk_246[pauseCtx->kscpPos] < 6) {
+            } else if (pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] < 6) {
                 temp1 = -1;
                 temp2 = 1;
                 temp3 = 10;
                 temp4 = 10;
-            } else if ((pauseCtx->unk_246[pauseCtx->kscpPos] >= 6) && (pauseCtx->unk_246[pauseCtx->kscpPos] < 0x12)) {
+            } else if ((pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] >= 6) && (pauseCtx->cursorSlotCopy[pauseCtx->kscpPos] < 0x12)) {
                 temp1 = -5;
                 temp2 = 3;
                 temp3 = 8;
@@ -1448,13 +1448,13 @@ void func_80826BA8(GlobalContext* globalCtx) {
     Map_SetFloorPalettesData(globalCtx, pauseCtx->unk_236 - 3);
 
     if ((globalCtx->sceneNum >= SCENE_YDAN) && (globalCtx->sceneNum <= SCENE_TAKARAYA)) {
-        if ((VREG(30) + 3) == pauseCtx->unk_218[1]) {
+        if ((VREG(30) + 3) == pauseCtx->cursorSlot[1]) {
             func_8081F6E4(interfaceCtx->mapSegment, 0x7F8, interfaceCtx->mapPaletteNum, 0xE);
         }
     }
 
     if ((globalCtx->sceneNum >= SCENE_YDAN) && (globalCtx->sceneNum <= SCENE_TAKARAYA)) {
-        if ((VREG(30) + 3) == pauseCtx->unk_218[1]) {
+        if ((VREG(30) + 3) == pauseCtx->cursorSlot[1]) {
             func_8081F6E4(interfaceCtx->mapSegment + 0x800, 0x7F8, interfaceCtx->mapPaletteNum, 0xE);
         }
     }
@@ -1504,8 +1504,8 @@ void KaleidoScope_Update(GlobalContext* globalCtx) {
             D_808321A8[3] = gSaveContext.buttonStatus[3];
             D_808321A8[4] = gSaveContext.buttonStatus[4];
 
-            pauseCtx->unk_222[1] = 0;
-            pauseCtx->unk_246[1] = pauseCtx->unk_218[1] = pauseCtx->unk_236 = VREG(30) + 3;
+            pauseCtx->cursorX[1] = 0;
+            pauseCtx->cursorSlotCopy[1] = pauseCtx->cursorSlot[1] = pauseCtx->unk_236 = VREG(30) + 3;
 
             WREG(16) = -175;
             WREG(17) = 155;
@@ -2114,7 +2114,7 @@ void KaleidoScope_Update(GlobalContext* globalCtx) {
             break;
 
         case 7:
-            pauseCtx->unk_246[1] = pauseCtx->unk_218[1] = pauseCtx->unk_236 = VREG(30) + 3;
+            pauseCtx->cursorSlotCopy[1] = pauseCtx->cursorSlot[1] = pauseCtx->unk_236 = VREG(30) + 3;
             WREG(16) = -175;
             WREG(17) = 155;
             pauseCtx->unk_204 = -434.0f;

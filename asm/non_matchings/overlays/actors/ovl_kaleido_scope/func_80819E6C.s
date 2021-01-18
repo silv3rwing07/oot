@@ -165,7 +165,7 @@ glabel func_80819E6C
 /* 0685C 8081A07C A7A700A4 */  sh      $a3, 0x00A4($sp)           
 /* 06860 8081A080 A7A300A2 */  sh      $v1, 0x00A2($sp)           
 /* 06864 8081A084 8FA400B8 */  lw      $a0, 0x00B8($sp)           
-/* 06868 8081A088 0C207E07 */  jal     func_8081F81C              
+/* 06868 8081A088 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 0686C 8081A08C 24120002 */  addiu   $s2, $zero, 0x0002         ## $s2 = 00000002
 /* 06870 8081A090 87A300A2 */  lh      $v1, 0x00A2($sp)           
 /* 06874 8081A094 87A700A4 */  lh      $a3, 0x00A4($sp)           
@@ -226,7 +226,7 @@ glabel func_80819E6C
 /* 0693C 8081A15C A7A700A4 */  sh      $a3, 0x00A4($sp)           
 /* 06940 8081A160 A7A300A2 */  sh      $v1, 0x00A2($sp)           
 /* 06944 8081A164 8FA400B8 */  lw      $a0, 0x00B8($sp)           
-/* 06948 8081A168 0C207E07 */  jal     func_8081F81C              
+/* 06948 8081A168 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 0694C 8081A16C 24120002 */  addiu   $s2, $zero, 0x0002         ## $s2 = 00000002
 /* 06950 8081A170 87A300A2 */  lh      $v1, 0x00A2($sp)           
 /* 06954 8081A174 87A700A4 */  lh      $a3, 0x00A4($sp)           
@@ -313,7 +313,7 @@ glabel func_80819E6C
 /* 06A78 8081A298 1420FFE7 */  bne     $at, $zero, .L8081A238     
 /* 06A7C 8081A29C 00073C03 */  sra     $a3, $a3, 16               
 /* 06A80 8081A2A0 8FA400B8 */  lw      $a0, 0x00B8($sp)           
-/* 06A84 8081A2A4 0C207E07 */  jal     func_8081F81C              
+/* 06A84 8081A2A4 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 06A88 8081A2A8 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
 /* 06A8C 8081A2AC 86220238 */  lh      $v0, 0x0238($s1)           ## 00000238
 .L8081A2B0:
@@ -371,7 +371,7 @@ glabel func_80819E6C
 /* 06B4C 8081A36C 0461FFE8 */  bgez    $v1, .L8081A310            
 /* 06B50 8081A370 00073C03 */  sra     $a3, $a3, 16               
 /* 06B54 8081A374 8FA400B8 */  lw      $a0, 0x00B8($sp)           
-/* 06B58 8081A378 0C207E07 */  jal     func_8081F81C              
+/* 06B58 8081A378 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 06B5C 8081A37C 2405000A */  addiu   $a1, $zero, 0x000A         ## $a1 = 0000000A
 /* 06B60 8081A380 86220238 */  lh      $v0, 0x0238($s1)           ## 00000238
 .L8081A384:
@@ -484,8 +484,8 @@ glabel func_80819E6C
 /* 06CE0 8081A500 3324FFFF */  andi    $a0, $t9, 0xFFFF           ## $a0 = 00000000
 .L8081A504:
 /* 06CE4 8081A504 97AA00AA */  lhu     $t2, 0x00AA($sp)           
-/* 06CE8 8081A508 3C0D8083 */  lui     $t5, %hi(D_8082ABFC)       ## $t5 = 80830000
-/* 06CEC 8081A50C 25ADABFC */  addiu   $t5, $t5, %lo(D_8082ABFC)  ## $t5 = 8082ABFC
+/* 06CE8 8081A508 3C0D8083 */  lui     $t5, %hi(gSlotAgeReqs)       ## $t5 = 80830000
+/* 06CEC 8081A50C 25ADABFC */  addiu   $t5, $t5, %lo(gSlotAgeReqs)  ## $t5 = 8082ABFC
 /* 06CF0 8081A510 A62A023E */  sh      $t2, 0x023E($s1)           ## 0000023E
 /* 06CF4 8081A514 97AB00A8 */  lhu     $t3, 0x00A8($sp)           
 /* 06CF8 8081A518 24010009 */  addiu   $at, $zero, 0x0009         ## $at = 00000009
@@ -566,7 +566,7 @@ glabel func_80819E6C
 /* 06E10 8081A630 A62D0250 */  sh      $t5, 0x0250($s1)           ## 00000250
 /* 06E14 8081A634 84590000 */  lh      $t9, 0x0000($v0)           ## 00000000
 /* 06E18 8081A638 2404000A */  addiu   $a0, $zero, 0x000A         ## $a0 = 0000000A
-/* 06E1C 8081A63C 3C018083 */  lui     $at, %hi(D_8082A434)       ## $at = 80830000
+/* 06E1C 8081A63C 3C018083 */  lui     $at, %hi(sEquipAnimTimer)       ## $at = 80830000
 /* 06E20 8081A640 03240019 */  multu   $t9, $a0                   
 /* 06E24 8081A644 240D0003 */  addiu   $t5, $zero, 0x0003         ## $t5 = 00000003
 /* 06E28 8081A648 3C078013 */  lui     $a3, %hi(D_801333E0)
@@ -583,11 +583,11 @@ glabel func_80819E6C
 /* 06E54 8081A674 01640019 */  multu   $t3, $a0                   
 /* 06E58 8081A678 00006012 */  mflo    $t4                        
 /* 06E5C 8081A67C A62C0256 */  sh      $t4, 0x0256($s1)           ## 00000256
-/* 06E60 8081A680 A420A434 */  sh      $zero, %lo(D_8082A434)($at) 
-/* 06E64 8081A684 3C018083 */  lui     $at, %hi(D_8082A430)       ## $at = 80830000
-/* 06E68 8081A688 A42DA430 */  sh      $t5, %lo(D_8082A430)($at)  
-/* 06E6C 8081A68C 3C018083 */  lui     $at, %hi(D_8082A438)       ## $at = 80830000
-/* 06E70 8081A690 A424A438 */  sh      $a0, %lo(D_8082A438)($at)  
+/* 06E60 8081A680 A420A434 */  sh      $zero, %lo(sEquipAnimTimer)($at) 
+/* 06E64 8081A684 3C018083 */  lui     $at, %hi(sEquipAnimState)       ## $at = 80830000
+/* 06E68 8081A688 A42DA430 */  sh      $t5, %lo(sEquipAnimState)($at)  
+/* 06E6C 8081A68C 3C018083 */  lui     $at, %hi(sEquipAnimNumFrames)       ## $at = 80830000
+/* 06E70 8081A690 A424A438 */  sh      $a0, %lo(sEquipAnimNumFrames)($at)  
 /* 06E74 8081A694 9623024E */  lhu     $v1, 0x024E($s1)           ## 0000024E
 /* 06E78 8081A698 24010004 */  addiu   $at, $zero, 0x0004         ## $at = 00000004
 /* 06E7C 8081A69C 10610005 */  beq     $v1, $at, .L8081A6B4       
@@ -616,13 +616,13 @@ glabel func_80819E6C
 /* 06EC8 8081A6E8 AFAE0014 */  sw      $t6, 0x0014($sp)           
 /* 06ECC 8081A6EC 260F00BF */  addiu   $t7, $s0, 0x00BF           ## $t7 = 000000C1
 /* 06ED0 8081A6F0 A62F024E */  sh      $t7, 0x024E($s1)           ## 0000024E
-/* 06ED4 8081A6F4 3C018083 */  lui     $at, %hi(D_8082A430)       ## $at = 80830000
-/* 06ED8 8081A6F8 A420A430 */  sh      $zero, %lo(D_8082A430)($at) 
+/* 06ED4 8081A6F4 3C018083 */  lui     $at, %hi(sEquipAnimState)       ## $at = 80830000
+/* 06ED8 8081A6F8 A420A430 */  sh      $zero, %lo(sEquipAnimState)($at) 
 /* 06EDC 8081A6FC A6200258 */  sh      $zero, 0x0258($s1)         ## 00000258
-/* 06EE0 8081A700 3C018083 */  lui     $at, %hi(D_8082A438)       ## $at = 80830000
+/* 06EE0 8081A700 3C018083 */  lui     $at, %hi(sEquipAnimNumFrames)       ## $at = 80830000
 /* 06EE4 8081A704 24180006 */  addiu   $t8, $zero, 0x0006         ## $t8 = 00000006
 /* 06EE8 8081A708 10000030 */  beq     $zero, $zero, .L8081A7CC   
-/* 06EEC 8081A70C A438A438 */  sh      $t8, %lo(D_8082A438)($at)  
+/* 06EEC 8081A70C A438A438 */  sh      $t8, %lo(sEquipAnimNumFrames)($at)  
 .L8081A710:
 /* 06EF0 8081A710 3C078013 */  lui     $a3, %hi(D_801333E0)
 /* 06EF4 8081A714 3C198013 */  lui     $t9, %hi(D_801333E8)
@@ -820,20 +820,20 @@ glabel func_80819E6C
 /* 071B8 8081A9D8 55E00086 */  bnel    $t7, $zero, .L8081ABF4     
 /* 071BC 8081A9DC 8E6302C0 */  lw      $v1, 0x02C0($s3)           ## 000002C0
 /* 071C0 8081A9E0 86380238 */  lh      $t8, 0x0238($s1)           ## 00000238
-/* 071C4 8081A9E4 3C028083 */  lui     $v0, %hi(D_8082ABFC)       ## $v0 = 80830000
+/* 071C4 8081A9E4 3C028083 */  lui     $v0, %hi(gSlotAgeReqs)       ## $v0 = 80830000
 /* 071C8 8081A9E8 00501021 */  addu    $v0, $v0, $s0              
 /* 071CC 8081A9EC 57000081 */  bnel    $t8, $zero, .L8081ABF4     
 /* 071D0 8081A9F0 8E6302C0 */  lw      $v1, 0x02C0($s3)           ## 000002C0
-/* 071D4 8081A9F4 9042ABFC */  lbu     $v0, %lo(D_8082ABFC)($v0)  
+/* 071D4 8081A9F4 9042ABFC */  lbu     $v0, %lo(gSlotAgeReqs)($v0)  
 /* 071D8 8081A9F8 24010009 */  addiu   $at, $zero, 0x0009         ## $at = 00000009
-/* 071DC 8081A9FC 3C0A8083 */  lui     $t2, %hi(D_8082A430)       ## $t2 = 80830000
+/* 071DC 8081A9FC 3C0A8083 */  lui     $t2, %hi(sEquipAnimState)       ## $t2 = 80830000
 /* 071E0 8081AA00 10410004 */  beq     $v0, $at, .L8081AA14       
 /* 071E4 8081AA04 00000000 */  nop
 /* 071E8 8081AA08 8E990004 */  lw      $t9, 0x0004($s4)           ## 8015E664
 /* 071EC 8081AA0C 54590079 */  bnel    $v0, $t9, .L8081ABF4       
 /* 071F0 8081AA10 8E6302C0 */  lw      $v1, 0x02C0($s3)           ## 000002C0
 .L8081AA14:
-/* 071F4 8081AA14 854AA430 */  lh      $t2, %lo(D_8082A430)($t2)  
+/* 071F4 8081AA14 854AA430 */  lh      $t2, %lo(sEquipAnimState)($t2)  
 /* 071F8 8081AA18 24010002 */  addiu   $at, $zero, 0x0002         ## $at = 00000002
 /* 071FC 8081AA1C 02001025 */  or      $v0, $s0, $zero            ## $v0 = 00000001
 /* 07200 8081AA20 15410047 */  bne     $t2, $at, .L8081AB40       
@@ -1009,9 +1009,9 @@ glabel func_80819E6C
 /* 07490 8081ACB0 AC6A0000 */  sw      $t2, 0x0000($v1)           ## 00000000
 /* 07494 8081ACB4 AC790004 */  sw      $t9, 0x0004($v1)           ## 00000004
 .L8081ACB8:
-/* 07498 8081ACB8 3C188083 */  lui     $t8, %hi(D_8082A420)       ## $t8 = 80830000
+/* 07498 8081ACB8 3C188083 */  lui     $t8, %hi(sSlotAmmoMap)       ## $t8 = 80830000
 /* 0749C 8081ACBC 0310C021 */  addu    $t8, $t8, $s0              
-/* 074A0 8081ACC0 9318A420 */  lbu     $t8, %lo(D_8082A420)($t8)  
+/* 074A0 8081ACC0 9318A420 */  lbu     $t8, %lo(sSlotAmmoMap)($t8)  
 /* 074A4 8081ACC4 02905821 */  addu    $t3, $s4, $s0              
 /* 074A8 8081ACC8 52B8000A */  beql    $s5, $t8, .L8081ACF4       
 /* 074AC 8081ACCC 26100001 */  addiu   $s0, $s0, 0x0001           ## $s0 = 00000001
@@ -1021,7 +1021,7 @@ glabel func_80819E6C
 /* 074BC 8081ACDC 12A20004 */  beq     $s5, $v0, .L8081ACF0       
 /* 074C0 8081ACE0 00023400 */  sll     $a2, $v0, 16               
 /* 074C4 8081ACE4 8DA50000 */  lw      $a1, 0x0000($t5)           ## 00000000
-/* 074C8 8081ACE8 0C206628 */  jal     func_808198A0              
+/* 074C8 8081ACE8 0C206628 */  jal     KaleidoScope_DrawInventoryAmmo              
 /* 074CC 8081ACEC 00063403 */  sra     $a2, $a2, 16               
 .L8081ACF0:
 /* 074D0 8081ACF0 26100001 */  addiu   $s0, $s0, 0x0001           ## $s0 = 00000002

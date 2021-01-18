@@ -2004,7 +2004,7 @@ void Inventory_UpdateBottleItem(GlobalContext* globalCtx, u8 item, u8 button) {
 
     Interface_LoadItemIcon1(globalCtx, button);
 
-    globalCtx->pauseCtx.unk_23E[0] = item;
+    globalCtx->pauseCtx.cursorItem[0] = item;
     gSaveContext.buttonStatus[button] = BTN_ENABLED;
 }
 
@@ -3295,7 +3295,7 @@ void Interface_Draw(GlobalContext* globalCtx) {
 
             if (pauseCtx->equipTargetItem < ITEM_MGARROW_EQUIP_FIRE) {
                 // Normal Equip (icon goes from the inventory slot to the C button when equipping it)
-                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, pauseCtx->equipMagicArrowAnimCounter);
+                gDPSetPrimColor(OVERLAY_DISP++, 0, 0, 255, 255, 255, pauseCtx->equipAnimAlpha);
                 gSPVertex(OVERLAY_DISP++, &pauseCtx->vtx_168[16], 4, 0);
 
                 gDPLoadTextureBlock(OVERLAY_DISP++, gItemIcons[pauseCtx->equipTargetItem], G_IM_FMT_RGBA, G_IM_SIZ_32b, 32, 32,
@@ -3305,10 +3305,10 @@ void Interface_Draw(GlobalContext* globalCtx) {
                 // Magic Arrow Equip Effect
                 phi_s3_2 = pauseCtx->equipTargetItem - ITEM_MGARROW_EQUIP_FIRE;
                 gDPSetPrimColor(OVERLAY_DISP++, 0, 0, sMagicArrowEffectsR[phi_s3_2], sMagicArrowEffectsG[phi_s3_2],
-                                sMagicArrowEffectsB[phi_s3_2], pauseCtx->equipMagicArrowAnimCounter);
+                                sMagicArrowEffectsB[phi_s3_2], pauseCtx->equipAnimAlpha);
 
-                if ((pauseCtx->equipMagicArrowAnimCounter > 0) && (pauseCtx->equipMagicArrowAnimCounter < 255)) {
-                    phi_s3_2 = (pauseCtx->equipMagicArrowAnimCounter / 8) / 2;
+                if ((pauseCtx->equipAnimAlpha > 0) && (pauseCtx->equipAnimAlpha < 255)) {
+                    phi_s3_2 = (pauseCtx->equipAnimAlpha / 8) / 2;
                     pauseCtx->vtx_168[16].v.ob[0] = pauseCtx->vtx_168[18].v.ob[0] =
                         pauseCtx->vtx_168[16].v.ob[0] - phi_s3_2;
                     pauseCtx->vtx_168[17].v.ob[0] = pauseCtx->vtx_168[19].v.ob[0] =

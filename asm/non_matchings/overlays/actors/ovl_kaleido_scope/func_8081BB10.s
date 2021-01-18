@@ -62,7 +62,7 @@ glabel func_8081BB10
 /* 08390 8081BBB0 13200006 */  beq     $t9, $zero, .L8081BBCC     
 /* 08394 8081BBB4 3C0A8012 */  lui     $t2, %hi(gBitFlags)
 /* 08398 8081BBB8 8FA401F0 */  lw      $a0, 0x01F0($sp)           
-/* 0839C 8081BBBC 0C207E07 */  jal     func_8081F81C              
+/* 0839C 8081BBBC 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 083A0 8081BBC0 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
 /* 083A4 8081BBC4 10000023 */  beq     $zero, $zero, .L8081BC54   
 /* 083A8 8081BBC8 8625021A */  lh      $a1, 0x021A($s1)           ## 0000021A
@@ -98,7 +98,7 @@ glabel func_8081BB10
 /* 0841C 8081BC3C 01D97824 */  and     $t7, $t6, $t9              
 /* 08420 8081BC40 55E00004 */  bnel    $t7, $zero, .L8081BC54     
 /* 08424 8081BC44 8625021A */  lh      $a1, 0x021A($s1)           ## 0000021A
-/* 08428 8081BC48 0C207E07 */  jal     func_8081F81C              
+/* 08428 8081BC48 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 0842C 8081BC4C 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
 /* 08430 8081BC50 8625021A */  lh      $a1, 0x021A($s1)           ## 0000021A
 .L8081BC54:
@@ -114,7 +114,7 @@ glabel func_8081BB10
 /* 08454 8081BC74 3C048083 */  lui     $a0, %hi(D_8082F9D8)       ## $a0 = 80830000
 /* 08458 8081BC78 57000007 */  bnel    $t8, $zero, .L8081BC98     
 /* 0845C 8081BC7C 862E0236 */  lh      $t6, 0x0236($s1)           ## 00000236
-/* 08460 8081BC80 0C207E07 */  jal     func_8081F81C              
+/* 08460 8081BC80 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 08464 8081BC84 8FA401F0 */  lw      $a0, 0x01F0($sp)           
 /* 08468 8081BC88 8625021A */  lh      $a1, 0x021A($s1)           ## 0000021A
 /* 0846C 8081BC8C 1000001C */  beq     $zero, $zero, .L8081BD00   

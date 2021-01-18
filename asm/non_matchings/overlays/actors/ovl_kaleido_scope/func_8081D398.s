@@ -65,7 +65,7 @@ glabel func_8081D398
 /* 09C44 8081D464 54200007 */  bnel    $at, $zero, .L8081D484     
 /* 09C48 8081D468 846F0220 */  lh      $t7, 0x0220($v1)           ## 00000220
 /* 09C4C 8081D46C A6CE0220 */  sh      $t6, 0x0220($s6)           ## 00000220
-/* 09C50 8081D470 0C207E07 */  jal     func_8081F81C              
+/* 09C50 8081D470 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 09C54 8081D474 8FA40288 */  lw      $a0, 0x0288($sp)           
 /* 09C58 8081D478 10000023 */  beq     $zero, $zero, .L8081D508   
 /* 09C5C 8081D47C 86C20220 */  lh      $v0, 0x0220($s6)           ## 00000220
@@ -91,7 +91,7 @@ glabel func_8081D398
 /* 09CA0 8081D4C0 846F0220 */  lh      $t7, 0x0220($v1)           ## 00000220
 /* 09CA4 8081D4C4 A6C00220 */  sh      $zero, 0x0220($s6)         ## 00000220
 /* 09CA8 8081D4C8 8FA40288 */  lw      $a0, 0x0288($sp)           
-/* 09CAC 8081D4CC 0C207E07 */  jal     func_8081F81C              
+/* 09CAC 8081D4CC 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 09CB0 8081D4D0 2405000A */  addiu   $a1, $zero, 0x000A         ## $a1 = 0000000A
 /* 09CB4 8081D4D4 1000000C */  beq     $zero, $zero, .L8081D508   
 /* 09CB8 8081D4D8 86C20220 */  lh      $v0, 0x0220($s6)           ## 00000220

@@ -2652,7 +2652,7 @@ void func_8081AD44(GlobalContext* globalCtx);
 void PauseMapMark_Draw(GlobalContext* globalCtx);
 Gfx* func_8081F334(Gfx* gfx, void* texture, s16 width, s16 height, u16 arg4);
 Gfx* func_8081F50C(Gfx* gfx, void* texture, s16 width, s16 height, u16 arg4);
-void func_8081F81C(GlobalContext* globalCtx, u16 arg1);
+void KaleidoScope_MoveCursorToSpecialPos(GlobalContext* globalCtx, u16 specialPos);
 void func_8081F87C(GraphicsContext* gfxCtx, void* texture, u16 width, u16 height, u16 arg4);
 void func_8081F2FC(void);
 void func_8081F1F0(GlobalContext* globalCtx);

@@ -10,7 +10,7 @@
     && (gSaveContext.equips.buttonItems[n] < (ITEM_BOW_ARROW_LIGHT + 1))) \
     
 #define BUTTON_ITEM_IS_BOW_OR_MAGICARROW(n) \
-    (gSaveContext.equips.buttonItems[n] == ITEM_BOW) || BUTTON_ITEM_IS_MAGICARROW(n)
+    ((gSaveContext.equips.buttonItems[n] == ITEM_BOW) || BUTTON_ITEM_IS_MAGICARROW(n))
 
 // .data
 //D_8082A420
@@ -115,12 +115,12 @@ void func_80819E6C(GlobalContext* globalCtx) {
     u16 i;
     u16 v;
     u16 cursorItem; //"ccc"
-    u16 cursorSlot;
+    u16 newCursorSlot; //Used after item selected
     s16 moveCursorResult; //"ok_fg"
-    s16 oldCursorSlot;
+    s16 cursorSlot; //Used during moving cursor code
     s16 oldCursorX;
     s16 oldCursorY;
-    s16 oldCursorSlot;
+    s16 oldCursorSlot; //Only used to check if slot has changed
 
     OPEN_DISPS(globalCtx->state.gfxCtx, "../z_kaleido_item.c", 234);
 
@@ -136,7 +136,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
         oldCursorSlot = pauseCtx->cursorSlot[0];
         cursorItem = pauseCtx->cursorItem[0];
-        cursorSlot = pauseCtx->cursorSlotCopy[0];
+        newCursorSlot = pauseCtx->cursorSlotCopy[0];
 
         if (pauseCtx->cursorSpecialPos == KSCP_CURSOR_NORMAL) {
             pauseCtx->unk_260 = 4;
@@ -146,11 +146,11 @@ void func_80819E6C(GlobalContext* globalCtx) {
             }
 
             if (ABS(pauseCtx->stickRelX) > 30) {
-                oldCursorSlot = pauseCtx->cursorSlot[0];
+                cursorSlot = pauseCtx->cursorSlot[0];
                 oldCursorX = pauseCtx->cursorX[0];
                 oldCursorY = pauseCtx->cursorY[0];
 
-                osSyncPrintf("now=%d  ccc=%d\n", oldCursorSlot, cursorItem);
+                osSyncPrintf("now=%d  ccc=%d\n", cursorSlot, cursorItem);
 
                 while (moveCursorResult == 0) {
                     if (pauseCtx->stickRelX < -30) {
@@ -177,7 +177,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
                             if (oldCursorY == pauseCtx->cursorY[0]) {
                                 pauseCtx->cursorX[0] = oldCursorX;
-                                pauseCtx->cursorSlot[0] = oldCursorSlot;
+                                pauseCtx->cursorSlot[0] = cursorSlot;
 
                                 KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGELEFT);
 
@@ -208,7 +208,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
                             if (oldCursorY == pauseCtx->cursorY[0]) {
                                 pauseCtx->cursorX[0] = oldCursorX;
-                                pauseCtx->cursorSlot[0] = oldCursorSlot;
+                                pauseCtx->cursorSlot[0] = cursorSlot;
 
                                 KaleidoScope_MoveCursorToSpecialPos(globalCtx, KSCP_CURSOR_SPECIAL_PAGERIGHT);
 
@@ -232,26 +232,26 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
                 Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
 
-                oldCursorSlot = 0;
+                cursorSlot = 0;
                 oldCursorX = 0;
                 oldCursorY = 0;
                 while (true) {
-                    if (gSaveContext.inventory.items[oldCursorSlot] != ITEM_NONE) {
-                        pauseCtx->cursorSlot[0] = oldCursorSlot;
+                    if (gSaveContext.inventory.items[cursorSlot] != ITEM_NONE) {
+                        pauseCtx->cursorSlot[0] = cursorSlot;
                         pauseCtx->cursorX[0] = oldCursorX;
                         pauseCtx->cursorY[0] = oldCursorY;
                         moveCursorResult = 1;
                         break;
                     } else {
                         oldCursorY = oldCursorY + 1;
-                        oldCursorSlot = oldCursorSlot + 6;
+                        cursorSlot = cursorSlot + 6;
                         if (oldCursorY < 4) {
                             continue;
                         }
 
                         oldCursorY = 0;
-                        oldCursorSlot = oldCursorX + 1;
-                        oldCursorX = oldCursorSlot;
+                        cursorSlot = oldCursorX + 1;
+                        oldCursorX = cursorSlot;
                         if (oldCursorX < 6) {
                             continue;
                         }
@@ -268,26 +268,26 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
                 Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
 
-                oldCursorSlot = 5;
+                cursorSlot = 5;
                 oldCursorX = 5;
                 oldCursorY = 0;
                 while (true) {
-                    if (gSaveContext.inventory.items[oldCursorSlot] != ITEM_NONE) {
-                        pauseCtx->cursorSlot[0] = oldCursorSlot;
+                    if (gSaveContext.inventory.items[cursorSlot] != ITEM_NONE) {
+                        pauseCtx->cursorSlot[0] = cursorSlot;
                         pauseCtx->cursorX[0] = oldCursorX;
                         pauseCtx->cursorY[0] = oldCursorY;
                         moveCursorResult = 1;
                         break;
                     } else {
                         oldCursorY = oldCursorY + 1;
-                        oldCursorSlot = oldCursorSlot + 6;
+                        cursorSlot = cursorSlot + 6;
                         if (oldCursorY < 4) {
                             continue;
                         }
 
                         oldCursorY = 0;
-                        oldCursorSlot = oldCursorX - 1;
-                        oldCursorX = oldCursorSlot;
+                        cursorSlot = oldCursorX - 1;
+                        oldCursorX = cursorSlot;
                         if (oldCursorX >= 0) {
                             continue;
                         }
@@ -303,7 +303,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
             if (cursorItem != ITEM_CURSOR_INVALID) {
                 if (ABS(pauseCtx->stickRelY) > 30) {
                     moveCursorResult = 0;
-                    oldCursorSlot = pauseCtx->cursorSlot[0];
+                    cursorSlot = pauseCtx->cursorSlot[0];
                     oldCursorY = pauseCtx->cursorY[0];
                     while (moveCursorResult == 0) {
                         if (pauseCtx->stickRelY > 30) {
@@ -316,7 +316,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
                                 }
                             } else {
                                 pauseCtx->cursorY[0] = oldCursorY;
-                                pauseCtx->cursorSlot[0] = oldCursorSlot;
+                                pauseCtx->cursorSlot[0] = cursorSlot;
 
                                 moveCursorResult = 2;
                             }
@@ -330,7 +330,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
                                 }
                             } else {
                                 pauseCtx->cursorY[0] = oldCursorY;
-                                pauseCtx->cursorSlot[0] = oldCursorSlot;
+                                pauseCtx->cursorSlot[0] = cursorSlot;
 
                                 moveCursorResult = 2;
                             }
@@ -342,7 +342,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
                 }
             }
 
-            cursorSlot = pauseCtx->cursorSlot[0];
+            newCursorSlot = pauseCtx->cursorSlot[0];
 
             pauseCtx->unk_260 = 4;
 
@@ -353,18 +353,18 @@ void func_80819E6C(GlobalContext* globalCtx) {
             }
 
             pauseCtx->cursorItem[0] = cursorItem;
-            pauseCtx->cursorSlotCopy[0] = cursorSlot;
+            pauseCtx->cursorSlotCopy[0] = newCursorSlot;
 
-            if (!((gSlotAgeReqs[cursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[cursorSlot] == ((void)0, gSaveContext.linkAge)))) {
+            if (!((gSlotAgeReqs[newCursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[newCursorSlot] == ((void)0, gSaveContext.linkAge)))) {
                 pauseCtx->unk_25E = 1;
             }
 
             if (cursorItem != ITEM_CURSOR_INVALID) {
-                func_80819E14(pauseCtx, cursorSlot * 4, pauseCtx->vtx_158);
+                func_80819E14(pauseCtx, newCursorSlot * 4, pauseCtx->vtx_158);
 
                 if ((pauseCtx->flag == 0) && (pauseCtx->state == 6) && (pauseCtx->unk_1E4 == 0)) {
                     if (CHECK_BTN_ANY(input->press.button, BTN_CLEFT | BTN_CDOWN | BTN_CRIGHT)) {
-                        if (((gSlotAgeReqs[cursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[cursorSlot] == gSaveContext.linkAge)) &&
+                        if (((gSlotAgeReqs[newCursorSlot] == SLOT_AGE_EITHER) || (gSlotAgeReqs[newCursorSlot] == gSaveContext.linkAge)) &&
                             (cursorItem != ITEM_SOLD_OUT)) {
                             if (CHECK_BTN_ALL(input->press.button, BTN_CLEFT)) {
                                 pauseCtx->equipTargetCBtn = 0;
@@ -375,10 +375,10 @@ void func_80819E6C(GlobalContext* globalCtx) {
                             }
 
                             pauseCtx->equipTargetItem = cursorItem;
-                            pauseCtx->equipTargetSlot = cursorSlot;
+                            pauseCtx->equipTargetSlot = newCursorSlot;
                             pauseCtx->unk_1E4 = 3;
-                            pauseCtx->equipAnimX = pauseCtx->vtx_158[cursorSlot * 4].v.ob[0] * 10;
-                            pauseCtx->equipAnimY = pauseCtx->vtx_158[cursorSlot * 4].v.ob[1] * 10;
+                            pauseCtx->equipAnimX = pauseCtx->vtx_158[newCursorSlot * 4].v.ob[0] * 10;
+                            pauseCtx->equipAnimY = pauseCtx->vtx_158[newCursorSlot * 4].v.ob[1] * 10;
                             pauseCtx->equipAnimAlpha = 255;
                             sEquipAnimTimer = 0;
                             sEquipAnimState = 3;
@@ -423,7 +423,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
             Audio_PlaySoundGeneral(NA_SE_SY_CURSOR, &D_801333D4, 4, &D_801333E0, &D_801333E0, &D_801333E8);
         }
     } else if ((pauseCtx->unk_1E4 == 3) && (pauseCtx->kscpPos == 0)) {
-        func_80819E14(pauseCtx, cursorSlot * 4, pauseCtx->vtx_158);
+        func_80819E14(pauseCtx, newCursorSlot * 4, pauseCtx->vtx_158);
         pauseCtx->unk_260 = 4;
     }
 
@@ -464,7 +464,7 @@ void func_80819E6C(GlobalContext* globalCtx) {
 
                         pauseCtx->vtx_158[v + 2].v.ob[1] = pauseCtx->vtx_158[v + 3].v.ob[1] =
                             pauseCtx->vtx_158[v + 0].v.ob[1] - 32;
-                    } else if (cursorSlot == i) {
+                    } else if (newCursorSlot == i) {
                         pauseCtx->vtx_158[v + 0].v.ob[0] = pauseCtx->vtx_158[v + 2].v.ob[0] =
                             pauseCtx->vtx_158[v + 0].v.ob[0] - 2;
 

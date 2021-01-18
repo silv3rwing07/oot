@@ -263,7 +263,7 @@ glabel func_80818340
 /* 04EA4 808186C4 A6D10228 */  sh      $s1, 0x0228($s6)           ## 00000228
 /* 04EA8 808186C8 A6D3021E */  sh      $s3, 0x021E($s6)           ## 0000021E
 /* 04EAC 808186CC 8FA400D8 */  lw      $a0, 0x00D8($sp)           
-/* 04EB0 808186D0 0C207E07 */  jal     func_8081F81C              
+/* 04EB0 808186D0 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 04EB4 808186D4 24100003 */  addiu   $s0, $zero, 0x0003         ## $s0 = 00000003
 /* 04EB8 808186D8 3C088016 */  lui     $t0, %hi(gSaveContext)
 /* 04EBC 808186DC 3C078012 */  lui     $a3, %hi(gUpgradeShifts)
@@ -342,7 +342,7 @@ glabel func_80818340
 /* 04FCC 808187EC A6D10228 */  sh      $s1, 0x0228($s6)           ## 00000228
 /* 04FD0 808187F0 A6D3021E */  sh      $s3, 0x021E($s6)           ## 0000021E
 /* 04FD4 808187F4 8FA400D8 */  lw      $a0, 0x00D8($sp)           
-/* 04FD8 808187F8 0C207E07 */  jal     func_8081F81C              
+/* 04FD8 808187F8 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 04FDC 808187FC 24100003 */  addiu   $s0, $zero, 0x0003         ## $s0 = 00000003
 /* 04FE0 80818800 3C088016 */  lui     $t0, %hi(gSaveContext)
 /* 04FE4 80818804 3C078012 */  lui     $a3, %hi(gUpgradeShifts)
@@ -555,7 +555,7 @@ glabel func_80818340
 /* 052E4 80818B04 1420FFC7 */  bne     $at, $zero, .L80818A24     
 /* 052E8 80818B08 00139C03 */  sra     $s3, $s3, 16               
 /* 052EC 80818B0C 8FA400D8 */  lw      $a0, 0x00D8($sp)           
-/* 052F0 80818B10 0C207E07 */  jal     func_8081F81C              
+/* 052F0 80818B10 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 052F4 80818B14 2405000B */  addiu   $a1, $zero, 0x000B         ## $a1 = 0000000B
 /* 052F8 80818B18 3C088016 */  lui     $t0, %hi(gSaveContext)
 /* 052FC 80818B1C 2508E660 */  addiu   $t0, %lo(gSaveContext)
@@ -635,7 +635,7 @@ glabel func_80818340
 /* 0540C 80818C2C 0621FFD5 */  bgez    $s1, .L80818B84            
 /* 05410 80818C30 00139C03 */  sra     $s3, $s3, 16               
 /* 05414 80818C34 8FA400D8 */  lw      $a0, 0x00D8($sp)           
-/* 05418 80818C38 0C207E07 */  jal     func_8081F81C              
+/* 05418 80818C38 0C207E07 */  jal     KaleidoScope_MoveCursorToSpecialPos              
 /* 0541C 80818C3C 2405000A */  addiu   $a1, $zero, 0x000A         ## $a1 = 0000000A
 /* 05420 80818C40 3C088016 */  lui     $t0, %hi(gSaveContext)
 /* 05424 80818C44 2508E660 */  addiu   $t0, %lo(gSaveContext)
@@ -794,8 +794,8 @@ glabel func_80818340
 /* 0564C 80818E6C A6D7024C */  sh      $s7, 0x024C($s6)           ## 0000024C
 /* 05650 80818E70 86CA0232 */  lh      $t2, 0x0232($s6)           ## 00000232
 /* 05654 80818E74 86D90228 */  lh      $t9, 0x0228($s6)           ## 00000228
-/* 05658 80818E78 3C1E8083 */  lui     $s8, %hi(D_8082ABFC+0x18)       ## $s8 = 80830000
-/* 0565C 80818E7C 27DEAC14 */  addiu   $s8, $s8, %lo(D_8082ABFC+0x18)  ## $s8 = 8082AC14
+/* 05658 80818E78 3C1E8083 */  lui     $s8, %hi(gSlotAgeReqs+0x18)       ## $s8 = 80830000
+/* 0565C 80818E7C 27DEAC14 */  addiu   $s8, $s8, %lo(gSlotAgeReqs+0x18)  ## $s8 = 8082AC14
 /* 05660 80818E80 000A6080 */  sll     $t4, $t2,  2               
 /* 05664 80818E84 03CCC021 */  addu    $t8, $s8, $t4              
 /* 05668 80818E88 03195821 */  addu    $t3, $t8, $t9              
@@ -1028,8 +1028,8 @@ glabel func_80818340
 /* 059A4 808191C4 A439A414 */  sh      $t9, %lo(D_8082A414)($at)  
 /* 059A8 808191C8 A6C001E4 */  sh      $zero, 0x01E4($s6)         ## 000001E4
 .L808191CC:
-/* 059AC 808191CC 3C1E8083 */  lui     $s8, %hi(D_8082ABFC+0x18)       ## $s8 = 80830000
-/* 059B0 808191D0 27DEAC14 */  addiu   $s8, $s8, %lo(D_8082ABFC+0x18)  ## $s8 = 8082AC14
+/* 059AC 808191CC 3C1E8083 */  lui     $s8, %hi(gSlotAgeReqs+0x18)       ## $s8 = 80830000
+/* 059B0 808191D0 27DEAC14 */  addiu   $s8, $s8, %lo(gSlotAgeReqs+0x18)  ## $s8 = 8082AC14
 /* 059B4 808191D4 97B700BA */  lhu     $s7, 0x00BA($sp)           
 /* 059B8 808191D8 0000A825 */  or      $s5, $zero, $zero          ## $s5 = 00000000
 /* 059BC 808191DC 24120004 */  addiu   $s2, $zero, 0x0004         ## $s2 = 00000004

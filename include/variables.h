@@ -3578,6 +3578,6 @@ extern u8 gSystemHeap[];
 
 extern MapMarkData (*gMapMarkDataTable[3])[];
 
-extern u8 D_8082ABFC[];
+extern u8 gSlotAgeReqs[];
 
 #endif
