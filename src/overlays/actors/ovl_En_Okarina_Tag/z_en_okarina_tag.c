@@ -15,11 +15,11 @@ void EnOkarinaTag_Init(Actor* thisx, GlobalContext* globalCtx);
 void EnOkarinaTag_Destroy(Actor* thisx, GlobalContext* globalCtx);
 void EnOkarinaTag_Update(Actor* thisx, GlobalContext* globalCtx);
 
-void func_80ABEF2C(EnOkarinaTag* this, GlobalContext* globalCtx);
-void func_80ABF708(EnOkarinaTag* this, GlobalContext* globalCtx);
-void func_80ABF28C(EnOkarinaTag* this, GlobalContext* globalCtx);
+void EnOkarinaTag_Action7(EnOkarinaTag* this, GlobalContext* globalCtx);
+void EnOkarinaTag_Action5(EnOkarinaTag* this, GlobalContext* globalCtx);
+void EnOkarinaTag_ActionGeneral(EnOkarinaTag* this, GlobalContext* globalCtx);
 void func_80ABF0CC(EnOkarinaTag* this, GlobalContext* globalCtx);
-void func_80ABF4C8(EnOkarinaTag* this, GlobalContext* globalCtx);
+void EnOkarinaTag_ActionCheckSongDone(EnOkarinaTag* this, GlobalContext* globalCtx);
 void func_80ABF7CC(EnOkarinaTag* this, GlobalContext* globalCtx);
 
 const ActorInit En_Okarina_Tag_InitVars = {
@@ -50,41 +50,41 @@ void EnOkarinaTag_Init(Actor* thisx, GlobalContext* globalCtx) {
     // "Ocarina tag outbreak"
     osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ オカリナタグ発生 ☆☆☆☆☆ %x\n" VT_RST, this->actor.params);
     this->actor.flags &= ~1;
-    this->unk_150 = (this->actor.params >> 0xA) & 0x3F;
-    this->unk_152 = (this->actor.params >> 6) & 0xF;
+    this->type = (this->actor.params >> 0xA) & 0x3F;
+    this->answer = (this->actor.params >> 6) & 0xF;
     this->switchFlag = this->actor.params & 0x3F;
     if (this->switchFlag == 0x3F) {
         this->switchFlag = -1;
     }
-    if (this->unk_152 == 0xF) {
-        this->unk_152 = 0;
-        this->unk_158 = 1;
+    if (this->answer == 0xF) {
+        this->answer = 0;
+        this->hit = 1;
     }
     this->actor.targetMode = 1;
     if (this->actor.world.rot.z > 0) {
-        this->unk_15C = this->actor.world.rot.z * 40.0f;
+        this->range = this->actor.world.rot.z * 40.0f;
     }
 
     // "Save information"
     osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ セーブ情報\t ☆☆☆☆☆ %d\n" VT_RST, this->switchFlag);
     // "Type index"
-    osSyncPrintf(VT_FGCOL(YELLOW) "☆☆☆☆☆ 種類インデックス ☆☆☆☆☆ %d\n" VT_RST, this->unk_150);
+    osSyncPrintf(VT_FGCOL(YELLOW) "☆☆☆☆☆ 種類インデックス ☆☆☆☆☆ %d\n" VT_RST, this->type);
     // "Correct answer information"
-    osSyncPrintf(VT_FGCOL(PURPLE) "☆☆☆☆☆ 正解情報\t ☆☆☆☆☆ %d\n" VT_RST, this->unk_152);
+    osSyncPrintf(VT_FGCOL(PURPLE) "☆☆☆☆☆ 正解情報\t ☆☆☆☆☆ %d\n" VT_RST, this->answer);
     // "Range information"
     osSyncPrintf(VT_FGCOL(CYAN) "☆☆☆☆☆ 範囲情報\t ☆☆☆☆☆ %d\n" VT_RST, this->actor.world.rot.z);
     // "Processing range information"
-    osSyncPrintf(VT_FGCOL(CYAN) "☆☆☆☆☆ 処理範囲情報\t ☆☆☆☆☆ %f\n" VT_RST, this->unk_15C);
+    osSyncPrintf(VT_FGCOL(CYAN) "☆☆☆☆☆ 処理範囲情報\t ☆☆☆☆☆ %f\n" VT_RST, this->range);
     // "Hit?"
-    osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 当り？\t\t ☆☆☆☆☆ %d\n" VT_RST, this->unk_158);
+    osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ 当り？\t\t ☆☆☆☆☆ %d\n" VT_RST, this->hit);
     osSyncPrintf("\n\n");
 
     if ((this->switchFlag >= 0) && (Flags_GetSwitch(globalCtx, this->switchFlag))) {
         Actor_Kill(&this->actor);
     } else {
-        switch (this->unk_150) {
+        switch (this->type) {
             case 7:
-                this->actionFunc = func_80ABEF2C;
+                this->actionFunc = EnOkarinaTag_Action7;
                 break;
             case 2:
                 if (LINK_IS_ADULT) {
@@ -94,12 +94,12 @@ void EnOkarinaTag_Init(Actor* thisx, GlobalContext* globalCtx) {
             case 1:
             case 4:
             case 6:
-                this->actionFunc = func_80ABF28C;
+                this->actionFunc = EnOkarinaTag_ActionGeneral;
                 break;
             case 5:
                 // "This poem is dedicated to the memory of the dearly departed members of the Royal Family."
                 this->actor.textId = 0x5021;
-                this->actionFunc = func_80ABF708;
+                this->actionFunc = EnOkarinaTag_Action5;
                 break;
             default:
                 Actor_Kill(&this->actor);
@@ -108,33 +108,33 @@ void EnOkarinaTag_Init(Actor* thisx, GlobalContext* globalCtx) {
     }
 }
 
-void func_80ABEF2C(EnOkarinaTag* this, GlobalContext* globalCtx) {
+void EnOkarinaTag_Action7(EnOkarinaTag* this, GlobalContext* globalCtx) {
     Player* player;
-    u16 unk_152;
+    u16 answer;
 
     player = PLAYER;
-    this->unk_15A++;
+    this->debugFrameCounter++;
     if ((this->switchFlag >= 0) && (Flags_GetSwitch(globalCtx, this->switchFlag))) {
         this->actor.flags &= ~1;
     } else {
-        if ((this->unk_152 != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
+        if ((this->answer != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
             if (player->stateFlags2 & 0x1000000) {
                 // "North! ! ! ! !"
                 osSyncPrintf(VT_FGCOL(RED) "☆☆☆☆☆ 北！！！！！ ☆☆☆☆☆ %f\n" VT_RST, this->actor.xzDistToPlayer);
             }
-            if ((this->actor.xzDistToPlayer < (90.0f + this->unk_15C)) &&
+            if ((this->actor.xzDistToPlayer < (90.0f + this->range)) &&
                 (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 80.0f)) {
                 if (player->stateFlags2 & 0x2000000) {
-                    unk_152 = this->unk_152;
-                    if (unk_152 == 6) {
-                        unk_152 = 0xA;
+                    answer = this->answer;
+                    if (answer == 6) {
+                        answer = 0xA;
                     }
                     player->stateFlags2 |= 0x800000;
-                    func_8010BD58(globalCtx, unk_152 + 0x22);
+                    func_8010BD58(globalCtx, answer + 0x22);
                     this->actionFunc = func_80ABF0CC;
-                } else if ((this->actor.xzDistToPlayer < (50.0f + this->unk_15C) &&
+                } else if ((this->actor.xzDistToPlayer < (50.0f + this->range) &&
                             ((fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 40.0f)))) {
-                    this->unk_15A = 0;
+                    this->debugFrameCounter = 0;
                     player->unk_6A8 = &this->actor;
                 }
             }
@@ -146,7 +146,7 @@ void func_80ABF0CC(EnOkarinaTag* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
     if (globalCtx->msgCtx.unk_E3EE == 4) {
-        this->actionFunc = func_80ABEF2C;
+        this->actionFunc = EnOkarinaTag_Action7;
     } else {
         if (globalCtx->msgCtx.unk_E3EE == 3) {
             if (this->switchFlag >= 0) {
@@ -159,10 +159,10 @@ void func_80ABF0CC(EnOkarinaTag* this, GlobalContext* globalCtx) {
                 globalCtx->msgCtx.unk_E3EE = 4;
             }
             func_80078884(NA_SE_SY_CORRECT_CHIME);
-            this->actionFunc = func_80ABEF2C;
+            this->actionFunc = EnOkarinaTag_Action7;
             return;
         }
-        if (this->unk_158 != 0) {
+        if (this->hit != 0) {
             if ((globalCtx->msgCtx.unk_E3EE == 5) || (globalCtx->msgCtx.unk_E3EE == 6) ||
                 (globalCtx->msgCtx.unk_E3EE == 7) || (globalCtx->msgCtx.unk_E3EE == 8) ||
                 (globalCtx->msgCtx.unk_E3EE == 9) || (globalCtx->msgCtx.unk_E3EE == 10) ||
@@ -172,32 +172,32 @@ void func_80ABF0CC(EnOkarinaTag* this, GlobalContext* globalCtx) {
                 }
                 globalCtx->msgCtx.unk_E3EE = 4;
                 func_80078884(NA_SE_SY_CORRECT_CHIME);
-                this->actionFunc = func_80ABEF2C;
+                this->actionFunc = EnOkarinaTag_Action7;
                 return;
             }
         }
         if ((globalCtx->msgCtx.unk_E3EE >= 5) && (globalCtx->msgCtx.unk_E3EE < 0xE)) {
             globalCtx->msgCtx.unk_E3EE = 4;
-            this->actionFunc = func_80ABEF2C;
+            this->actionFunc = EnOkarinaTag_Action7;
         } else if (globalCtx->msgCtx.unk_E3EE == 1) {
             player->stateFlags2 |= 0x800000;
         }
     }
 }
 
-void func_80ABF28C(EnOkarinaTag* this, GlobalContext* globalCtx) {
+void EnOkarinaTag_ActionGeneral(EnOkarinaTag* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
-    this->unk_15A++;
-    if ((this->unk_152 != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
+    this->debugFrameCounter++;
+    if ((this->answer != 6) || (gSaveContext.scarecrowSpawnSongSet)) {
         if ((this->switchFlag >= 0) && Flags_GetSwitch(globalCtx, this->switchFlag)) {
             this->actor.flags &= ~1;
-        } else if (((this->unk_150 != 4) || !(gSaveContext.eventChkInf[4] & 0x800)) &&
-                   ((this->unk_150 != 6) || !(gSaveContext.eventChkInf[1] & 0x2000)) &&
-                   (this->actor.xzDistToPlayer < (90.0f + this->unk_15C)) &&
+        } else if (((this->type != 4) || !(gSaveContext.eventChkInf[4] & 0x800)) &&
+                   ((this->type != 6) || !(gSaveContext.eventChkInf[1] & 0x2000)) &&
+                   (this->actor.xzDistToPlayer < (90.0f + this->range)) &&
                    (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 80.0f)) {
             if (player->stateFlags2 & 0x1000000) {
-                switch (this->unk_150) {
+                switch (this->type) {
                     case 1:
                         func_8010BD58(globalCtx, 0x24);
                         break;
@@ -213,32 +213,32 @@ void func_80ABF28C(EnOkarinaTag* this, GlobalContext* globalCtx) {
                     default:
                         // "Ocarina Invisible-kun demo start check error source"
                         osSyncPrintf(VT_FGCOL(GREEN) "☆☆☆☆☆ オカリナ透明君デモ開始チェックエラー原 ☆☆☆☆☆ %d\n" VT_RST,
-                                     this->unk_150);
+                                     this->type);
                         Actor_Kill(&this->actor);
                         break;
                 }
                 player->stateFlags2 |= 0x800000;
-                this->actionFunc = func_80ABF4C8;
-            } else if ((this->actor.xzDistToPlayer < (50.0f + this->unk_15C)) &&
+                this->actionFunc = EnOkarinaTag_ActionCheckSongDone;
+            } else if ((this->actor.xzDistToPlayer < (50.0f + this->range)) &&
                        (fabsf(player->actor.world.pos.y - this->actor.world.pos.y) < 40.0f)) {
-                this->unk_15A = 0;
+                this->debugFrameCounter = 0;
                 player->stateFlags2 |= 0x800000;
             }
         }
     }
 }
 
-void func_80ABF4C8(EnOkarinaTag* this, GlobalContext* globalCtx) {
+void EnOkarinaTag_ActionCheckSongDone(EnOkarinaTag* this, GlobalContext* globalCtx) {
     Player* player = PLAYER;
 
     if (globalCtx->msgCtx.unk_E3EE == 4) {
-        this->actionFunc = func_80ABF28C;
+        this->actionFunc = EnOkarinaTag_ActionGeneral;
     } else if (globalCtx->msgCtx.unk_E3EE == 3) {
         func_80078884(NA_SE_SY_CORRECT_CHIME);
         if (this->switchFlag >= 0) {
             Flags_SetSwitch(globalCtx, this->switchFlag);
         }
-        switch (this->unk_150) {
+        switch (this->type) {
             case 1:
                 Flags_SetSwitch(globalCtx, this->switchFlag);
                 gSaveContext.eventChkInf[3] |= 0x200;
@@ -263,12 +263,12 @@ void func_80ABF4C8(EnOkarinaTag* this, GlobalContext* globalCtx) {
                 break;
         }
         globalCtx->msgCtx.unk_E3EE = 4;
-        this->actionFunc = func_80ABF28C;
+        this->actionFunc = EnOkarinaTag_ActionGeneral;
     } else {
         if (globalCtx->msgCtx.unk_E3EE >= 5) {
             if (globalCtx->msgCtx.unk_E3EE < 0xE) {
                 globalCtx->msgCtx.unk_E3EE = 4;
-                this->actionFunc = func_80ABF28C;
+                this->actionFunc = EnOkarinaTag_ActionGeneral;
                 return;
             }
         }
@@ -278,7 +278,7 @@ void func_80ABF4C8(EnOkarinaTag* this, GlobalContext* globalCtx) {
     }
 }
 
-void func_80ABF708(EnOkarinaTag* this, GlobalContext* globalCtx) {
+void EnOkarinaTag_Action5(EnOkarinaTag* this, GlobalContext* globalCtx) {
     s16 yawDiff;
     s16 yawDiffNew;
 
@@ -286,7 +286,7 @@ void func_80ABF708(EnOkarinaTag* this, GlobalContext* globalCtx) {
         this->actionFunc = func_80ABF7CC;
     } else {
         yawDiff = this->actor.yawTowardsPlayer - this->actor.world.rot.y;
-        this->unk_15A++;
+        this->debugFrameCounter++;
         if (!(this->actor.xzDistToPlayer > 120.0f)) {
             if (CHECK_QUEST_ITEM(QUEST_SONG_SUN)) {
                 // "This poem is dedicated to the memory of the dearly departed members of the Royal Family."
@@ -294,7 +294,7 @@ void func_80ABF708(EnOkarinaTag* this, GlobalContext* globalCtx) {
             }
             yawDiffNew = ABS(yawDiff);
             if (yawDiffNew < 0x4300) {
-                this->unk_15A = 0;
+                this->debugFrameCounter = 0;
                 func_8002F2CC(&this->actor, globalCtx, 70.0f);
             }
         }
@@ -311,7 +311,7 @@ void func_80ABF7CC(EnOkarinaTag* this, GlobalContext* globalCtx) {
             globalCtx->csCtx.segment = SEGMENTED_TO_VIRTUAL(&D_020024A0);
             gSaveContext.cutsceneTrigger = 1;
         }
-        this->actionFunc = func_80ABF708;
+        this->actionFunc = EnOkarinaTag_Action5;
     }
 }
 
@@ -320,8 +320,8 @@ void EnOkarinaTag_Update(Actor* thisx, GlobalContext* globalCtx) {
 
     this->actionFunc(this, globalCtx);
     if (BREG(0) != 0) {
-        if (this->unk_15A != 0) {
-            if (!(this->unk_15A & 1)) {
+        if (this->debugFrameCounter != 0) {
+            if (!(this->debugFrameCounter & 1)) {
                 DebugDisplay_AddObject(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z,
                                        this->actor.world.rot.x, this->actor.world.rot.y, this->actor.world.rot.z, 1.0f,
                                        1.0f, 1.0f, 120, 120, 120, 255, 4, globalCtx->state.gfxCtx);
